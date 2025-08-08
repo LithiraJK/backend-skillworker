@@ -5,6 +5,7 @@ import lk.ijse.skillworker_backend.dto.request.RegisterDTO;
 import lk.ijse.skillworker_backend.dto.response.AuthResponseDTO;
 import lk.ijse.skillworker_backend.entity.Role;
 import lk.ijse.skillworker_backend.entity.User;
+import lk.ijse.skillworker_backend.exception.EmailNotFoundException;
 import lk.ijse.skillworker_backend.exception.ResourceAlreadyExistsException;
 import lk.ijse.skillworker_backend.repository.UserRepository;
 import lk.ijse.skillworker_backend.service.AuthService;
@@ -12,6 +13,7 @@ import lk.ijse.skillworker_backend.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,20 +25,18 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    @Value("${admin.username}")
-    private String admin_username;
-
     @Value("${admin.email}")
     private String admin_email;
 
     @Value("${admin.password}")
     private String admin_password;
 
+    @Override
     public AuthResponseDTO authenticate(AuthDTO authDTO) {
         User user= userRepository
-                .findByUsername(authDTO.getUsername()).orElseThrow(
-                        ()->new UsernameNotFoundException
-                                ("Username not found"));
+                .findByEmail(authDTO.getEmail()).orElseThrow(
+                        ()->new EmailNotFoundException
+                                ("Email not found"));
 
         if (!passwordEncoder.matches(
                 authDTO.getPassword(),
@@ -44,28 +44,29 @@ public class AuthServiceImpl implements AuthService {
             throw new BadCredentialsException("Incorrect password");
         }
 
-        String token=jwtUtil.generateToken(authDTO.getUsername());
-        String username = user.getUsername();
-        String role = user.getRole().name();
-        return  new AuthResponseDTO(token, username, role);
-    }
+        String token=jwtUtil.generateToken(authDTO.getEmail());
 
+        String firstName = user.getFirstName() ;
+        String role = user.getRole().name();
+        return  new AuthResponseDTO(token, firstName, role);
+    }
+    @Override
     public String register(RegisterDTO registerDTO) {
 
         if (registerDTO.getRole() != null && registerDTO.getRole().equals("ADMIN")) {
             throw new ResourceAlreadyExistsException("Cannot register as ADMIN");
         }
 
-        if(userRepository.findByUsername(registerDTO.getUsername()).isPresent()){
-            throw new ResourceAlreadyExistsException("Username already exists");
+        if(userRepository.findByEmail(registerDTO.getEmail()).isPresent()){
+            throw new ResourceAlreadyExistsException("Email already exists");
         }
 
         User user=  User.builder()
-                .username(registerDTO.getUsername())
+                .firstName(registerDTO.getFirstName())
+                .lastName(registerDTO.getLastName())
+                .email(registerDTO.getEmail())
                 .password(passwordEncoder.encode(registerDTO.getPassword()))
                 .role(Role.valueOf(registerDTO.getRole()))
-                .email(registerDTO.getEmail())
-                .full_name(registerDTO.getFullName())
                 .build();
         userRepository.save(user);
         return  "User Registration Success";
@@ -77,8 +78,8 @@ public class AuthServiceImpl implements AuthService {
             return "ADMIN already exists";
         }
         User admin = User.builder()
-                .full_name("System Admin")
-                .username(admin_username)
+                .firstName("System")
+                .lastName("Admin")
                 .email(admin_email)
                 .password(passwordEncoder.encode(admin_password))
                 .role(Role.ADMIN)
@@ -86,6 +87,19 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(admin);
         return   "Default ADMIN created";
-
     }
+
+//    public AuthResponseDTO refreshToken(String accessToken) {
+//        var email = jwtUtil.extractUserEmail(accessToken);
+//        User user = userRepository.findByEmail(email)
+//                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+//        var refreshToken = jwtUtil.refreshToken(user);
+//        User  = User
+//                .builder()
+//                .firstName(user.getFirstName())
+//                .token(refreshToken)
+//                .role(user.getRole().name())
+//                .build();
+//        return user;
+//    }
 }

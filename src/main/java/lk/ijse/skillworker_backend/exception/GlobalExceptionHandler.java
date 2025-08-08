@@ -5,7 +5,6 @@ import lk.ijse.skillworker_backend.dto.response.APIResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -64,8 +63,8 @@ public class GlobalExceptionHandler {
         ),HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<APIResponse<String>> handleUsernameNotFoundException(UsernameNotFoundException e) {
+    @ExceptionHandler(EmailNotFoundException .class)
+    public ResponseEntity<APIResponse<String>> handleEmailNotFoundException(EmailNotFoundException e) {
         return new ResponseEntity<>(
                 new APIResponse<>(
                         404,

@@ -2,31 +2,34 @@ package lk.ijse.skillworker_backend.util;
 
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lk.ijse.skillworker_backend.entity.User;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Jwts;
 
 
 import java.util.Date;
+import java.util.HashMap;
 
 @Component
 public class JwtUtil {
-    @Value("${jwt.expiration}")
-    private long expiration;
+    @Value("${jwt.access-expiration}")
+    private long access_expiration;
 
     @Value("${jwt.secret}")
     private String secretKey;
 
-    public String generateToken(String username) {
+    public String generateToken(String email) {
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date
-                        (System.currentTimeMillis() + expiration))
+                        (System.currentTimeMillis() + access_expiration))
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes())
                         , SignatureAlgorithm.HS256).compact();
     }
-    public String extractUsername(String token) {
+    public String extractUserEmail(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .build()
@@ -46,4 +49,5 @@ public class JwtUtil {
             return false;
         }
     }
+
 }

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthResponseDTO {
+    private String firstName;
     private String token;
-    private  String username;
     private String role;
 }

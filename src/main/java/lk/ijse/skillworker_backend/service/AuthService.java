@@ -8,4 +8,5 @@ public interface AuthService {
     AuthResponseDTO authenticate(AuthDTO authDTO);
     String register(RegisterDTO registerDTO);
     String createDefaultAdmin();
+//    JwtAuthResponse refreshToken(String accessToken);
 }

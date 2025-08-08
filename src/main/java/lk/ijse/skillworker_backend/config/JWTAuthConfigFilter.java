@@ -29,7 +29,7 @@ public class JWTAuthConfigFilter extends OncePerRequestFilter {
 
         final String authHeader=request.getHeader("Authorization");
         final String jwtToken;
-        final String username;
+        final String email;
 
         System.out.println("Authorization Header: " + authHeader); //testing
 
@@ -39,10 +39,10 @@ public class JWTAuthConfigFilter extends OncePerRequestFilter {
         }
         jwtToken=authHeader.substring(7);
 
-        username=jwtUtil.extractUsername(jwtToken);
+        email=jwtUtil.extractUserEmail(jwtToken);
 
-        if (username!= null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        if (email!= null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
 
             // Validate the JWT token
