@@ -1,5 +1,6 @@
 package lk.ijse.skillworker_backend.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lk.ijse.skillworker_backend.dto.request.AuthDTO;
 import lk.ijse.skillworker_backend.dto.request.RegisterDTO;
 import lk.ijse.skillworker_backend.dto.response.APIResponse;
@@ -30,6 +31,26 @@ public class AuthController {
                 200,
                 "User Login Success !!",
                 authService.authenticate(authDTO))
+        );
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<APIResponse<AuthResponseDTO>> refreshAccessToken(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        System.out.println("Authorization Header: " + authHeader); // For debugging
+        System.out.println(request);
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Invalid Authorization header");
+        }
+
+        String refreshToken = authHeader.substring(7);
+        System.out.println("Refresh Token: " + refreshToken); // For debugging
+
+        return ResponseEntity.ok(new APIResponse<>(
+                200,
+                "Token Refreshed",
+                authService.refreshToken(refreshToken))
         );
     }
 }

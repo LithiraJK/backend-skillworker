@@ -93,4 +93,14 @@ public class GlobalExceptionHandler {
                         null
                 ), HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<APIResponse<String>> handleIllegalArgumentException(IllegalArgumentException e) {
+        return new ResponseEntity<>(
+                new APIResponse<>(
+                        400,
+                        e.getMessage(),
+                        null
+                ), HttpStatus.BAD_REQUEST);
+    }
 }

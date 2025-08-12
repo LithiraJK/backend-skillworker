@@ -45,10 +45,12 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String token=jwtUtil.generateToken(authDTO.getEmail());
+        String refreshToken=jwtUtil.generateRefreshToken(authDTO.getEmail());
+
 
         String firstName = user.getFirstName() ;
         String role = user.getRole().name();
-        return  new AuthResponseDTO(token, firstName, role);
+        return  new AuthResponseDTO(token,refreshToken, firstName, role);
     }
     @Override
     public String register(RegisterDTO registerDTO) {
@@ -78,8 +80,8 @@ public class AuthServiceImpl implements AuthService {
             return "ADMIN already exists";
         }
         User admin = User.builder()
-                .firstName("System")
-                .lastName("Admin")
+                .firstName("Admin")
+                .lastName("User")
                 .email(admin_email)
                 .password(passwordEncoder.encode(admin_password))
                 .role(Role.ADMIN)
@@ -89,17 +91,19 @@ public class AuthServiceImpl implements AuthService {
         return   "Default ADMIN created";
     }
 
-//    public AuthResponseDTO refreshToken(String accessToken) {
-//        var email = jwtUtil.extractUserEmail(accessToken);
-//        User user = userRepository.findByEmail(email)
-//                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-//        var refreshToken = jwtUtil.refreshToken(user);
-//        User  = User
-//                .builder()
-//                .firstName(user.getFirstName())
-//                .token(refreshToken)
-//                .role(user.getRole().name())
-//                .build();
-//        return user;
-//    }
+    @Override
+    public AuthResponseDTO refreshToken(String refreshToken) {
+        if (!jwtUtil.validateToken(refreshToken)) {
+            throw new BadCredentialsException("Invalid refresh token");
+        }
+
+        String email = jwtUtil.extractUserEmail(refreshToken);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        String newAccessToken = jwtUtil.generateToken(email);
+
+        return new AuthResponseDTO(newAccessToken, refreshToken, user.getFirstName(), user.getRole().name());
+    }
+
 }

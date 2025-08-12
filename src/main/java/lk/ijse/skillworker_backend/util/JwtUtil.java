@@ -10,12 +10,14 @@ import io.jsonwebtoken.Jwts;
 
 
 import java.util.Date;
-import java.util.HashMap;
 
 @Component
 public class JwtUtil {
     @Value("${jwt.access-expiration}")
     private long access_expiration;
+
+    @Value("${jwt.refresh-expiration}")
+    private long refresh_expiration;
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -24,10 +26,9 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date
-                        (System.currentTimeMillis() + access_expiration))
-                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes())
-                        , SignatureAlgorithm.HS256).compact();
+                .setExpiration(new Date(System.currentTimeMillis() + access_expiration))
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
+                .compact();
     }
     public String extractUserEmail(String token) {
         return Jwts.parserBuilder()
@@ -49,5 +50,16 @@ public class JwtUtil {
             return false;
         }
     }
+
+    public String generateRefreshToken(String email) {
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + refresh_expiration))
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+
 
 }
