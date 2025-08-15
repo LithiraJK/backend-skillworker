@@ -1,6 +1,7 @@
-package lk.ijse.skillworker_backend.entity;
+package lk.ijse.skillworker_backend.entity.location;
 
 import jakarta.persistence.*;
+import lk.ijse.skillworker_backend.entity.worker.WorkerLocation;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -20,8 +21,6 @@ public class Location {
 
     @Enumerated(EnumType.STRING)
     private District district;
-
-    private String city; // optional, for more specific location
 
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
     private List<WorkerLocation> workerLocations = new ArrayList<>();

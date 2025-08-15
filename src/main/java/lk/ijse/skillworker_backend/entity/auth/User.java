@@ -1,4 +1,4 @@
-package lk.ijse.skillworker_backend.entity;
+package lk.ijse.skillworker_backend.entity.auth;
 
 import jakarta.persistence.*;
 import lombok.*;

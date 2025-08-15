@@ -1,13 +1,16 @@
-package lk.ijse.skillworker_backend.entity;
+package lk.ijse.skillworker_backend.entity.category;
 
 import jakarta.persistence.*;
+import lk.ijse.skillworker_backend.entity.worker.Worker;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a category entity in the system.
  * Each category has a unique identifier.
  */
-
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,4 +24,7 @@ public class Category {
 
     @Column(nullable = false, unique = true)
     private String name;
+
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    private List<Worker> workers = new ArrayList<>();
 }

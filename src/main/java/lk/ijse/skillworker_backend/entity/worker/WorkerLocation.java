@@ -1,6 +1,7 @@
-package lk.ijse.skillworker_backend.entity;
+package lk.ijse.skillworker_backend.entity.worker;
 
 import jakarta.persistence.*;
+import lk.ijse.skillworker_backend.entity.location.Location;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

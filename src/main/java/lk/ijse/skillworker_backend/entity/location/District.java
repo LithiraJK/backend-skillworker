@@ -1,4 +1,4 @@
-package lk.ijse.skillworker_backend.entity;
+package lk.ijse.skillworker_backend.entity.location;
 
 public enum District {
     COLOMBO,

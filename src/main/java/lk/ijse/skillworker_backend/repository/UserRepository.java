@@ -1,7 +1,7 @@
 package lk.ijse.skillworker_backend.repository;
 
-import lk.ijse.skillworker_backend.entity.Role;
-import lk.ijse.skillworker_backend.entity.User;
+import lk.ijse.skillworker_backend.entity.auth.Role;
+import lk.ijse.skillworker_backend.entity.auth.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
