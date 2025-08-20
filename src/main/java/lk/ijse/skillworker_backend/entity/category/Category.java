@@ -1,7 +1,7 @@
 package lk.ijse.skillworker_backend.entity.category;
 
 import jakarta.persistence.*;
-import lk.ijse.skillworker_backend.entity.worker.Worker;
+import lk.ijse.skillworker_backend.entity.worker.WorkerCategory;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -25,6 +25,12 @@ public class Category {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
-    private List<Worker> workers = new ArrayList<>();
+    @Lob
+    private String description;
+
+    @Column(nullable = false)
+    private boolean isActive = true;
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<WorkerCategory> workerCategories = new ArrayList<>();
 }

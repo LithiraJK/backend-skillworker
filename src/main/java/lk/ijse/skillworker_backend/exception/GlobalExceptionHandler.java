@@ -27,8 +27,8 @@ public class GlobalExceptionHandler {
     }
 
 
-    @ExceptionHandler(ResourceNotFound.class)
-    public ResponseEntity<APIResponse<String>> handleGenericException(ResourceNotFound e) {    //handle all exception here
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<APIResponse<String>> handleGenericException(ResourceNotFoundException e) {    //handle all exception here
 
         System.err.println("Resource not found: " + e.getMessage());
         return new ResponseEntity<>(new APIResponse<>(
@@ -102,5 +102,15 @@ public class GlobalExceptionHandler {
                         e.getMessage(),
                         null
                 ), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<APIResponse<String>> handleCategoryNotFoundException(CategoryNotFoundException e) {
+        return new ResponseEntity<>(
+                new APIResponse<>(
+                        404,
+                        e.getMessage(),
+                        null
+                ), HttpStatus.NOT_FOUND);
     }
 }

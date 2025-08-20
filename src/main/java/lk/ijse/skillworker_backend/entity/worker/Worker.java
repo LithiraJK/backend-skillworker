@@ -18,7 +18,7 @@ public class Worker {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long worker_id;  // same as user_id for 1-to-1 relation
+    private Long worker_id;
 
     @OneToOne(cascade = CascadeType.ALL)
     @MapsId
@@ -26,8 +26,12 @@ public class Worker {
 
     private Integer experience_years;
 
-    private String phone;
+    @ElementCollection
+    @CollectionTable(name = "worker_phone_numbers", joinColumns = @JoinColumn(name = "worker_id"))
+    @Column(name = "phone_numbers")
+    private List<String> phone_numbers = new ArrayList<>();
 
+    @Lob
     private String bio;
 
     @ElementCollection
@@ -39,38 +43,14 @@ public class Worker {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    @Lob
     private String profilePictureUrl;
 
-    @Enumerated(EnumType.STRING)
-    private SubscriptionPlan subscriptionPlan;
+    private boolean isProfileComplete;
 
-    private boolean isProfileComplete;  // optional, can be calculated instead
-
-    @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<WorkerLocation> workerLocations = new ArrayList<>();
+
+    @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<WorkerCategory> workerCategories = new ArrayList<>();
 }
-//@GeneratedValue(strategy = GenerationType.IDENTITY)
-//private Long worker_id;  // same as user_id for 1-to-1 relation
-//
-//@OneToOne(cascade = CascadeType.ALL)
-//@MapsId
-//private User user;
-//
-//private String experience;
-//
-//private String phone;
-//
-//private String bio;
-//
-//private String skills;
-//
-//private List<Category> categories ;
-//
-//private List<WorkerLocation> working_area;
-//
-//private String profilePictureUrl;
-//
-//@Enumerated(EnumType.STRING)
-//private SubscriptionPlan subscriptionPlan;
-//
-//private boolean isProfileComplete;

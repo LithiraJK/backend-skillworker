@@ -15,17 +15,16 @@ import lombok.Setter;
 @Table(name = "worker_location")
 public class WorkerLocation {
 
-    @EmbeddedId
-    private WorkerLocationID workerLocationId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
-    @MapsId("worker_id")
-    @JoinColumn(name = "worker_id")
+    @JoinColumn(name = "worker_id", nullable = false)
     private Worker worker;
 
     @ManyToOne
-    @MapsId("location_id")
-    @JoinColumn(name = "location_id")
+    @JoinColumn(name = "location_id" , nullable = false)
     private Location location;
 
 }

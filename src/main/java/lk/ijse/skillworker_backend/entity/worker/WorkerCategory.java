@@ -15,16 +15,15 @@ import lombok.Setter;
 @Table(name = "worker_category")
 public class WorkerCategory {
 
-    @EmbeddedId
-    private WorkerCategoryID workerCategoryID;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
-    @MapsId("worker_id")
-    @JoinColumn(name = "worker_id")
+    @JoinColumn(name = "worker_id" , nullable = false)
     private Worker worker;
 
     @ManyToOne
-    @MapsId("category_id")
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id" , nullable = false)
     private Category category;
 }
