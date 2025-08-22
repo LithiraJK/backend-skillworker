@@ -1,6 +1,7 @@
 package lk.ijse.skillworker_backend.entity.worker;
 
 import jakarta.persistence.*;
+import lk.ijse.skillworker_backend.entity.ad.Ad;
 import lk.ijse.skillworker_backend.entity.auth.User;
 import lk.ijse.skillworker_backend.entity.category.Category;
 import lombok.*;
@@ -46,11 +47,17 @@ public class Worker {
     @Lob
     private String profilePictureUrl;
 
-    private boolean isProfileComplete;
+    @Column(name = "profile_complete", nullable = false)
+    private boolean profileComplete = false;
+
+    //Relationships
 
     @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<WorkerLocation> workerLocations = new ArrayList<>();
 
     @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<WorkerCategory> workerCategories = new ArrayList<>();
+
+    @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL , fetch = FetchType.LAZY)
+    private List<Ad> ads = new ArrayList<>();
 }

@@ -33,14 +33,14 @@ public class CategoryController {
     public ResponseEntity<APIResponse<List<CategoryResponseDTO>>> getCategories() {
 
         List<CategoryResponseDTO> categories = categoryService.getAllCategories();
-        return  new ResponseEntity<>(new APIResponse<>(200, "Category list fetch successfully", categories), HttpStatus.OK);
+        return ResponseEntity.ok(new APIResponse<>(200, "Category list fetch successfully", categories));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{id}")
     public ResponseEntity<APIResponse<CategoryResponseDTO>> updateCategory(@PathVariable Long id,  @RequestBody CategoryRequestDTO categoryDTO) {
         CategoryResponseDTO updatedCategory = categoryService.updateCategory(id, categoryDTO);
-        return new ResponseEntity<>(new APIResponse<>(200, "Category updated successfully", updatedCategory), HttpStatus.OK);
+        return ResponseEntity.ok(new APIResponse<>(200, "Category updated successfully", updatedCategory));
 
     }
 
@@ -48,7 +48,7 @@ public class CategoryController {
     @PatchMapping("status/{id}")
     public ResponseEntity<APIResponse<String>> changeCategoryStatus(@PathVariable Long id) {
         categoryService.changeCategoryStatus(id);
-        return new ResponseEntity<>(new APIResponse<>(200, "Category status changed successfully", null), HttpStatus.OK);
+        return ResponseEntity.ok(new APIResponse<>(200, "Category status changed successfully", null));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'WORKER', 'CLIENT')")
@@ -56,7 +56,7 @@ public class CategoryController {
     public ResponseEntity<APIResponse<List<CategoryResponseDTO>>> searchCategory(@PathVariable String keyword) {
         List<CategoryResponseDTO> categories = categoryService.searchCategory(keyword);
 
-        return new ResponseEntity<>(new APIResponse<>( 200, "Category search results", categories), HttpStatus.OK);
+        return ResponseEntity.ok(new APIResponse<>( 200, "Category search results", categories));
     }
 
 

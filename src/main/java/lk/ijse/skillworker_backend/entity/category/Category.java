@@ -1,6 +1,7 @@
 package lk.ijse.skillworker_backend.entity.category;
 
 import jakarta.persistence.*;
+import lk.ijse.skillworker_backend.entity.ad.Ad;
 import lk.ijse.skillworker_backend.entity.worker.WorkerCategory;
 import lombok.*;
 
@@ -31,6 +32,11 @@ public class Category {
     @Column(nullable = false)
     private boolean isActive = true;
 
+    //Relationships
+
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<WorkerCategory> workerCategories = new ArrayList<>();
+
+    @OneToMany(mappedBy = "category")
+    private List<Ad> ads = new ArrayList<>();
 }

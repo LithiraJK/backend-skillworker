@@ -26,7 +26,6 @@ public class Location {
     private boolean isActive = true;
 
     //Relationships
-
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<WorkerLocation> workerLocations = new ArrayList<>();
 
