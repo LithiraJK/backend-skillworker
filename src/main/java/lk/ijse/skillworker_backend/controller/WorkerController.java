@@ -1,11 +1,17 @@
 package lk.ijse.skillworker_backend.controller;
 
 
+import lk.ijse.skillworker_backend.dto.request.WorkerRequestDTO;
+import lk.ijse.skillworker_backend.dto.response.APIResponse;
+import lk.ijse.skillworker_backend.dto.response.WorkerResponseDTO;
+import lk.ijse.skillworker_backend.service.WorkerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/worker")
@@ -13,11 +19,73 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class WorkerController {
 
-    @GetMapping("/get")
-    public String getWorkerDetails() {
-        // This method will return worker details
-        return "Worker details will be implemented here.";
+    private final WorkerService workerService;
+
+    @PreAuthorize("hasAnyRole('ADMIN','WORKER')")
+    @PostMapping("/register")
+    public ResponseEntity<APIResponse<String>> registerWorker(@RequestBody WorkerRequestDTO workerRequestDTO) {
+       return new ResponseEntity<>(new APIResponse<>(
+               201 ,
+               "Worker Successfully Registered !" ,
+               workerService.registerWorker(workerRequestDTO)),
+               HttpStatus.CREATED
+       );
     }
+
+    @PreAuthorize("hasAnyRole('ADMIN','WORKER','CLIENT')")
+    @GetMapping("/getall")
+    public ResponseEntity<APIResponse<List<WorkerResponseDTO>>> getAllWorkers(){
+        List<WorkerResponseDTO> allWorkers = workerService.getAllWorkers();
+        return ResponseEntity.ok(new APIResponse<>(
+                200,
+                "Success",
+                allWorkers)
+        );
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/status/{id}")
+    public ResponseEntity<APIResponse<String>> changeStatus(@PathVariable Long id){
+        workerService.changeStatus(id);
+        return ResponseEntity.ok(new APIResponse<>(
+                200,
+                "Status Changed Successfully",
+                null)
+        );
+    }
+
+//    @GetMapping("/search/{keyword}")
+//    public ResponseEntity<APIResponse<String>> searchWorker(@PathVariable String keyword){
+//        return ResponseEntity.ok(new APIResponse<>(
+//                200,
+//                "Success",
+//                null
+//        ));
+//    }
+
+
+//    @PutMapping("update/{id}/profile")
+//    public ResponseEntity<WorkerResponseDTO> updateProfile(
+//            @PathVariable Long id,
+//            @RequestBody WorkerProfileDTO profileDTO) {
+//        return ResponseEntity.ok(workerService.updateProfile(id, profileDTO));
+//    }
+//
+//    @PutMapping("update/{id}/categories")
+//    public ResponseEntity<WorkerResponseDTO> updateCategories(
+//            @PathVariable Long id,
+//            @RequestBody WorkerCategoryUpdateDTO dto) {
+//        return ResponseEntity.ok(workerService.updateCategories(id, dto.getCategoryIds()));
+//    }
+//
+//    @PutMapping("update/{id}/locations")
+//    public ResponseEntity<WorkerResponseDTO> updateLocations(
+//            @PathVariable Long id,
+//            @RequestBody WorkerLocationUpdateDTO dto) {
+//        return ResponseEntity.ok(workerService.updateLocations(id, dto.getLocationIds()));
+//    }
+
+
 
 
 }

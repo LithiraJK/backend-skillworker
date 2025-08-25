@@ -2,16 +2,14 @@ package lk.ijse.skillworker_backend.entity.worker;
 
 import jakarta.persistence.*;
 import lk.ijse.skillworker_backend.entity.category.Category;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "worker_category")
 public class WorkerCategory {
 

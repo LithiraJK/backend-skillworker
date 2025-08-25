@@ -3,10 +3,7 @@ package lk.ijse.skillworker_backend.entity.ad;
 import jakarta.persistence.*;
 import lk.ijse.skillworker_backend.entity.category.Category;
 import lk.ijse.skillworker_backend.entity.worker.Worker;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -16,6 +13,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Entity
+@Builder
 public class Ad {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,8 +24,7 @@ public class Ad {
     @Lob
     private String description;
 
-    @Column(name = "starting_price", precision = 12, scale = 2)
-    private BigDecimal starting_price; // starting price
+    private BigDecimal startingPrice;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
@@ -42,7 +39,6 @@ public class Ad {
     @ManyToOne
     @JoinColumn(name = "worker_id")
     private Worker worker;
-
 
 
 }

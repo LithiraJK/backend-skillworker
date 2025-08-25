@@ -36,6 +36,14 @@ public class CategoryController {
         return ResponseEntity.ok(new APIResponse<>(200, "Category list fetch successfully", categories));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'WORKER', 'CLIENT')")
+    @GetMapping("/getactive")
+    public ResponseEntity<APIResponse<List<CategoryResponseDTO>>> getActiveCategories() {
+
+        List<CategoryResponseDTO> categories = categoryService.getActiveCategories();
+        return ResponseEntity.ok(new APIResponse<>(200, "Category list fetch successfully", categories));
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{id}")
     public ResponseEntity<APIResponse<CategoryResponseDTO>> updateCategory(@PathVariable Long id,  @RequestBody CategoryRequestDTO categoryDTO) {

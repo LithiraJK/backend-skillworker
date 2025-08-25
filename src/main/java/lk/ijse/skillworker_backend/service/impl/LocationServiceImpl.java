@@ -70,12 +70,22 @@ public class LocationServiceImpl implements LocationService {
             throw new ResourceNotFoundException("No districts match keyword: " + keyword);
         }
 
-        List<Location> locations = locationRepository.findByDistrictInAndIsActive(matchingDistricts, true);
+        List<Location> locations = locationRepository.findByDistrictInAndIsActiveTrue(matchingDistricts);
 
         if (locations.isEmpty()) {
             throw new ResourceNotFoundException("No locations found for: " + keyword);
         }
 
+        return modelMapper.map(locations, new TypeToken<List<LocationResponseDTO>>() {}.getType());
+    }
+
+    @Override
+    public List<LocationResponseDTO> getActiveLocations() {
+        List<Location> locations = locationRepository.findByIsActiveTrue();
+
+        if (locations.isEmpty()) {
+            throw  new ResourceNotFoundException("No locations found");
+        }
         return modelMapper.map(locations, new TypeToken<List<LocationResponseDTO>>() {}.getType());
     }
 

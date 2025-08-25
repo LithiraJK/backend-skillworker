@@ -15,4 +15,6 @@ public interface LocationService {
     void changeLocationStatus(Long id);
 
     List<LocationResponseDTO> searchLocations(String keyword);
+
+    List<LocationResponseDTO> getActiveLocations();
 }

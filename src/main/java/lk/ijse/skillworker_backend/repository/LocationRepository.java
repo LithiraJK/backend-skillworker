@@ -12,5 +12,7 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
 
     boolean existsByDistrict(District district);
 
-    List<Location> findByDistrictInAndIsActive(List<District> matchingDistricts, boolean b);
+    List<Location> findByDistrictInAndIsActiveTrue(List<District> matchingDistricts);
+
+    List<Location> findByIsActiveTrue();
 }

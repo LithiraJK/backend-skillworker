@@ -35,6 +35,13 @@ public class LocationController {
         return ResponseEntity.ok(new APIResponse<>( 200, "Locations found", locations));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','WORKER','CLIENT')")
+    @GetMapping("/getactive")
+    public ResponseEntity<APIResponse<List<LocationResponseDTO>>> getActiveLocations() {
+        List<LocationResponseDTO> locations = locationService.getActiveLocations();
+        return ResponseEntity.ok(new APIResponse<>( 200, "Locations found", locations));
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("status/{id}")
     public ResponseEntity<APIResponse<String>>  changeLocationStatus(@PathVariable Long id) {

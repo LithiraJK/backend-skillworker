@@ -44,7 +44,7 @@ public class CategoryServiceImpl implements CategoryService {
             throw new CategoryNotFoundException("No categories found");
         }
 
-        return modelMapper.map(categories, new TypeToken<List<Category>>() {}.getType());
+        return modelMapper.map(categories, new TypeToken<List<CategoryResponseDTO>>() {}.getType());
     }
 
     @Override
@@ -70,11 +70,21 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryResponseDTO> searchCategory(String keyword) {
-        List<Category> categories = categoryRepository.findCategoryByNameContainingIgnoreCaseAndIsActive(keyword ,true);
+        List<Category> categories = categoryRepository.findCategoryByNameContainingIgnoreCaseAndIsActiveTrue(keyword);
 
         if (categories.isEmpty()) {
             throw new CategoryNotFoundException("No active categories found for keyword: " + keyword);
         }
+        return modelMapper.map(categories, new TypeToken<List<CategoryResponseDTO>>() {}.getType());
+    }
+
+    @Override
+    public List<CategoryResponseDTO> getActiveCategories() {
+        List<Category> categories = categoryRepository.findByIsActiveTrue();
+        if (categories.isEmpty()) {
+            throw new CategoryNotFoundException("No Active categories found");
+        }
+
         return modelMapper.map(categories, new TypeToken<List<CategoryResponseDTO>>() {}.getType());
     }
 

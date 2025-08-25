@@ -18,4 +18,6 @@ public interface CategoryService {
     void changeCategoryStatus(Long id);
 
     List<CategoryResponseDTO> searchCategory(String keyword);
+
+    List<CategoryResponseDTO> getActiveCategories();
 }
