@@ -14,4 +14,5 @@ public interface WorkerService {
 
     void changeStatus(Long id);
 
+    WorkerResponseDTO getWorkerById(Long id);
 }

@@ -1,15 +1,18 @@
 package lk.ijse.skillworker_backend.controller;
 
 
+import com.cloudinary.Cloudinary;
 import lk.ijse.skillworker_backend.dto.request.WorkerRequestDTO;
 import lk.ijse.skillworker_backend.dto.response.APIResponse;
 import lk.ijse.skillworker_backend.dto.response.WorkerResponseDTO;
+import lk.ijse.skillworker_backend.service.CloudinaryService;
 import lk.ijse.skillworker_backend.service.WorkerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -53,6 +56,21 @@ public class WorkerController {
                 null)
         );
     }
+
+    @PreAuthorize("hasAnyRole('ADMIN','WORKER','CLIENT')")
+    @GetMapping("/getworker/{id}")
+    public ResponseEntity<APIResponse<WorkerResponseDTO>> getWorkerById(@PathVariable Long id){
+        WorkerResponseDTO worker = workerService.getWorkerById(id);
+        return ResponseEntity.ok(new APIResponse<>(
+                200,
+                "Success",
+                worker)
+        );
+    }
+
+
+
+
 
 //    @GetMapping("/search/{keyword}")
 //    public ResponseEntity<APIResponse<String>> searchWorker(@PathVariable String keyword){

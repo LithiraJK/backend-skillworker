@@ -6,6 +6,8 @@ import lk.ijse.skillworker_backend.entity.worker.Worker;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Date;
 
 
 @AllArgsConstructor
@@ -25,6 +27,8 @@ public class Ad {
     private String description;
 
     private BigDecimal startingPrice;
+
+    private LocalDate createdAt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)

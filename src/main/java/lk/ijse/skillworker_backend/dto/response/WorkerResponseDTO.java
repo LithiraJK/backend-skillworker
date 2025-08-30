@@ -11,7 +11,6 @@ import java.util.List;
 @Data
 public class WorkerResponseDTO {
     private Long workerId;
-    private Long userId;
     private Integer experienceYears;
     private List<String> phoneNumbers;
     private String bio;

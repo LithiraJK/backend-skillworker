@@ -23,6 +23,8 @@ public class Worker {
 
     private Integer experienceYears;
 
+//    private String nic ;
+
     @ElementCollection
     @CollectionTable(name = "worker_phone_numbers", joinColumns = @JoinColumn(name = "worker_id"))
     private List<String> phoneNumbers = new ArrayList<>();

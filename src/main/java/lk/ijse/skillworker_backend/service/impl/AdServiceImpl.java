@@ -17,6 +17,8 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -43,6 +45,7 @@ public class AdServiceImpl implements AdService {
                 .title(adRequestDTO.getTitle())
                 .description(adRequestDTO.getDescription())
                 .startingPrice(adRequestDTO.getStartingPrice())
+                .createdAt(LocalDate.now())
                 .status(adRequestDTO.getStatus() != null ? adRequestDTO.getStatus() : AdStatus.PENDING)
                 .category(category)
                 .worker(worker)

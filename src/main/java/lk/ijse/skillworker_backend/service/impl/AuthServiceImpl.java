@@ -47,9 +47,13 @@ public class AuthServiceImpl implements AuthService {
         String refreshToken=jwtUtil.generateRefreshToken(authDTO.getEmail());
 
 
+        Long userId = user.getId();
         String firstName = user.getFirstName() ;
+        String lastName = user.getLastName() ;
+        String email = user.getEmail() ;
         String role = user.getRole().name();
-        return  new AuthResponseDTO(token,refreshToken, firstName, role);
+
+        return  new AuthResponseDTO(userId,token,refreshToken, firstName, lastName, email, role);
     }
     @Override
     public String register(RegisterDTO registerDTO) {
@@ -102,7 +106,7 @@ public class AuthServiceImpl implements AuthService {
 
         String newAccessToken = jwtUtil.generateToken(email);
 
-        return new AuthResponseDTO(newAccessToken, refreshToken, user.getFirstName(), user.getRole().name());
+        return new AuthResponseDTO(user.getId(),newAccessToken, refreshToken, user.getFirstName(), user.getLastName(), user.getEmail(), user.getRole().name());
     }
 
 }

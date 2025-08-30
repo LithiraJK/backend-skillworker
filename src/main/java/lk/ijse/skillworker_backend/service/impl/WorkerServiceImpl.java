@@ -82,7 +82,6 @@ public class WorkerServiceImpl implements WorkerService {
 
             worker.getWorkerLocations().add(wl);
         }
-
         workerRepository.save(worker);
         return "Worker registered successfully";
     }
@@ -104,6 +103,16 @@ public class WorkerServiceImpl implements WorkerService {
 
         worker.setActive(!worker.isActive());
         workerRepository.save(worker);
+
+    }
+
+    @Override
+    public WorkerResponseDTO getWorkerById(Long id) {
+        Worker worker = workerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Worker not found with id: " + id));
+
+
+        return modelMapper.map(worker, WorkerResponseDTO.class);
 
     }
 
