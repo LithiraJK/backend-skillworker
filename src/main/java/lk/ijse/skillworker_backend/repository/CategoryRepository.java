@@ -1,6 +1,7 @@
 package lk.ijse.skillworker_backend.repository;
 
 import lk.ijse.skillworker_backend.entity.category.Category;
+import lk.ijse.skillworker_backend.entity.worker.WorkerCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,4 +15,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     boolean existsByNameIgnoreCase(String name);
 
     List<Category> findByIsActiveTrue();
+
+    List<WorkerCategory> findAllById(Long id);
 }

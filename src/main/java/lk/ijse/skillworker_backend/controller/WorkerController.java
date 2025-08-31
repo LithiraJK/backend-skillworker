@@ -3,6 +3,7 @@ package lk.ijse.skillworker_backend.controller;
 
 import com.cloudinary.Cloudinary;
 import lk.ijse.skillworker_backend.dto.request.WorkerRequestDTO;
+import lk.ijse.skillworker_backend.dto.request.WorkerUpdateDTO;
 import lk.ijse.skillworker_backend.dto.response.APIResponse;
 import lk.ijse.skillworker_backend.dto.response.WorkerResponseDTO;
 import lk.ijse.skillworker_backend.service.CloudinaryService;
@@ -67,6 +68,19 @@ public class WorkerController {
                 worker)
         );
     }
+
+    @PreAuthorize("hasAnyRole('ADMIN','WORKER','CLIENT')")
+    @PutMapping("/update/{workerId}")
+    public ResponseEntity<APIResponse<WorkerResponseDTO>> updateWorker(@PathVariable Long workerId , @RequestBody WorkerUpdateDTO dto){
+        System.out.println("UPdate DTO :  "+ dto.toString());
+        WorkerResponseDTO updated = workerService.updateWorker(workerId, dto);
+        return ResponseEntity.ok(new APIResponse<>(
+                200,
+                "Worker updated successfully",
+                updated
+        ));
+    }
+
 
 
 

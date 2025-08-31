@@ -1,6 +1,9 @@
 package lk.ijse.skillworker_backend.service.impl;
 
 import lk.ijse.skillworker_backend.dto.request.WorkerRequestDTO;
+import lk.ijse.skillworker_backend.dto.request.WorkerUpdateDTO;
+import lk.ijse.skillworker_backend.dto.response.CategoryResponseDTO;
+import lk.ijse.skillworker_backend.dto.response.LocationResponseDTO;
 import lk.ijse.skillworker_backend.dto.response.WorkerResponseDTO;
 import lk.ijse.skillworker_backend.entity.auth.User;
 import lk.ijse.skillworker_backend.entity.category.Category;
@@ -93,8 +96,24 @@ public class WorkerServiceImpl implements WorkerService {
         if (allWorkers.isEmpty()) {
             throw new ResourceNotFoundException("No workers found");
         }
-        return modelMapper.map(allWorkers, new TypeToken<List<WorkerResponseDTO>>() {}.getType());
+
+        return allWorkers.stream().map(worker -> {
+            WorkerResponseDTO dto = modelMapper.map(worker, WorkerResponseDTO.class);
+
+            // Map categories
+            dto.setCategories(worker.getWorkerCategories().stream()
+                    .map(wc -> modelMapper.map(wc.getCategory(), CategoryResponseDTO.class))
+                    .toList());
+
+            // Map locations
+            dto.setLocations(worker.getWorkerLocations().stream()
+                    .map(wl -> modelMapper.map(wl.getLocation(), LocationResponseDTO.class))
+                    .toList());
+
+            return dto;
+        }).toList();
     }
+
 
     @Override
     public void changeStatus(Long id) {
@@ -111,9 +130,92 @@ public class WorkerServiceImpl implements WorkerService {
         Worker worker = workerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Worker not found with id: " + id));
 
+        WorkerResponseDTO response = modelMapper.map(worker, WorkerResponseDTO.class);
 
-        return modelMapper.map(worker, WorkerResponseDTO.class);
+        // map categories
+        response.setCategories(worker.getWorkerCategories().stream()
+                .map(wc -> modelMapper.map(wc.getCategory(), CategoryResponseDTO.class))
+                .toList());
 
+        // map locations
+        response.setLocations(worker.getWorkerLocations().stream()
+                .map(wl -> modelMapper.map(wl.getLocation(), LocationResponseDTO.class))
+                .toList());
+
+        return response;
     }
+
+
+    @Override
+    @Transactional
+    public WorkerResponseDTO updateWorker(Long id, WorkerUpdateDTO dto) {
+        Worker worker = workerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Worker not found"));
+
+        if (dto.getExperienceYears() != null) {
+            worker.setExperienceYears(dto.getExperienceYears());
+        }
+
+        if (dto.getBio() != null) {
+            worker.setBio(dto.getBio());
+        }
+
+        if (dto.getPhoneNumbers() != null) {
+            worker.setPhoneNumbers(dto.getPhoneNumbers());
+        }
+
+        if (dto.getSkills() != null) {
+            worker.setSkills(dto.getSkills());
+        }
+
+        if (dto.getProfilePictureUrl() != null) {
+            worker.setProfilePictureUrl(dto.getProfilePictureUrl());
+        }
+
+        // Update categories if provided
+        if (dto.getCategoryIds() != null) {
+            worker.getWorkerCategories().clear();
+            dto.getCategoryIds().forEach(catId -> {
+                Category category = categoryRepository.findById(catId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+
+                WorkerCategory wc = WorkerCategory.builder()
+                        .worker(worker)
+                        .category(category)
+                        .build();
+
+                worker.getWorkerCategories().add(wc);
+            });
+        }
+
+        // Update locations if provided
+        if (dto.getLocationIds() != null) {
+            worker.getWorkerLocations().clear();
+            dto.getLocationIds().forEach(locId -> {
+                Location location = locationRepository.findById(locId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Location not found"));
+
+                WorkerLocation wl = WorkerLocation.builder()
+                        .location(location)
+                        .worker(worker)
+                        .build();
+                worker.getWorkerLocations().add(wl);
+            });
+        }
+
+        Worker saved = workerRepository.save(worker);
+
+        // Map back to WorkerResponseDTO with categories & locations
+        WorkerResponseDTO response = modelMapper.map(saved, WorkerResponseDTO.class);
+        response.setCategories(saved.getWorkerCategories().stream()
+                .map(wc -> modelMapper.map(wc.getCategory(), CategoryResponseDTO.class))
+                .toList());
+        response.setLocations(saved.getWorkerLocations().stream()
+                .map(wl -> modelMapper.map(wl.getLocation(), LocationResponseDTO.class))
+                .toList());
+
+        return response;
+    }
+
 
 }

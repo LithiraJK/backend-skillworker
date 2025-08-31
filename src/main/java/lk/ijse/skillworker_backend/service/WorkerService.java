@@ -1,6 +1,7 @@
 package lk.ijse.skillworker_backend.service;
 
 import lk.ijse.skillworker_backend.dto.request.WorkerRequestDTO;
+import lk.ijse.skillworker_backend.dto.request.WorkerUpdateDTO;
 import lk.ijse.skillworker_backend.dto.response.WorkerResponseDTO;
 import org.springframework.stereotype.Service;
 
@@ -15,4 +16,6 @@ public interface WorkerService {
     void changeStatus(Long id);
 
     WorkerResponseDTO getWorkerById(Long id);
+
+    WorkerResponseDTO updateWorker(Long workerId, WorkerUpdateDTO dto);
 }
