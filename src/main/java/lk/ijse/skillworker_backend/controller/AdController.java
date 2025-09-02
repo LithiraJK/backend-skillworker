@@ -4,8 +4,6 @@ import lk.ijse.skillworker_backend.dto.request.AdRequestDTO;
 import lk.ijse.skillworker_backend.dto.response.APIResponse;
 import lk.ijse.skillworker_backend.dto.response.AdResponseDTO;
 import lk.ijse.skillworker_backend.dto.response.AdStatusUpdateDTO;
-import lk.ijse.skillworker_backend.entity.ad.AdStatus;
-import lk.ijse.skillworker_backend.repository.AdRepository;
 import lk.ijse.skillworker_backend.service.AdService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

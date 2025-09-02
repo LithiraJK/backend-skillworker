@@ -2,7 +2,9 @@ package lk.ijse.skillworker_backend.service.impl;
 
 import lk.ijse.skillworker_backend.dto.request.AuthDTO;
 import lk.ijse.skillworker_backend.dto.request.RegisterDTO;
+import lk.ijse.skillworker_backend.dto.request.UserRequestDTO;
 import lk.ijse.skillworker_backend.dto.response.AuthResponseDTO;
+import lk.ijse.skillworker_backend.dto.response.UserResponseDTO;
 import lk.ijse.skillworker_backend.entity.auth.Role;
 import lk.ijse.skillworker_backend.entity.auth.User;
 import lk.ijse.skillworker_backend.exception.EmailNotFoundException;
@@ -11,11 +13,14 @@ import lk.ijse.skillworker_backend.repository.UserRepository;
 import lk.ijse.skillworker_backend.service.AuthService;
 import lk.ijse.skillworker_backend.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +28,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final ModelMapper modelMapper;
 
     @Value("${admin.email}")
     private String admin_email;
@@ -48,12 +54,9 @@ public class AuthServiceImpl implements AuthService {
 
 
         Long userId = user.getId();
-        String firstName = user.getFirstName() ;
-        String lastName = user.getLastName() ;
-        String email = user.getEmail() ;
         String role = user.getRole().name();
 
-        return  new AuthResponseDTO(userId,token,refreshToken, firstName, lastName, email, role);
+        return  new AuthResponseDTO(userId,token,refreshToken,role);
     }
     @Override
     public String register(RegisterDTO registerDTO) {
@@ -106,7 +109,27 @@ public class AuthServiceImpl implements AuthService {
 
         String newAccessToken = jwtUtil.generateToken(email);
 
-        return new AuthResponseDTO(user.getId(),newAccessToken, refreshToken, user.getFirstName(), user.getLastName(), user.getEmail(), user.getRole().name());
+        return new AuthResponseDTO(user.getId(),newAccessToken, refreshToken, user.getRole().name());
+    }
+
+
+    @Override
+    public UserResponseDTO getUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        return modelMapper.map(user, UserResponseDTO.class);
+    }
+
+    @Override
+    public UserResponseDTO updateUser(Long id , UserRequestDTO userDTO) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+
+        return modelMapper.map(userRepository.save(user), UserResponseDTO.class);
     }
 
 }

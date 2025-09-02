@@ -4,12 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthResponseDTO {
-    private Long userId;
-    private String token;
-    private String refreshToken;
-    private String role;
+@Data
+public class UserResponseDTO {
+    private String email;
+    private  String firstName;
+    private  String lastName;
 }
