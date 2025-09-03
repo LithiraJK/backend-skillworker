@@ -15,4 +15,12 @@ public interface AdService {
     List<AdResponseDTO> searchAdsByCategory(String keyword);
 
     void changeAdStatus(Long id, String adStatus);
+
+    void updateAd(Long id, AdRequestDTO adRequestDTO);
+
+    AdResponseDTO getAdById(Long id);
+
+    void deleteAd(Long id);
+
+    List<AdResponseDTO> getAdsByWorkerId(Long workerId);
 }

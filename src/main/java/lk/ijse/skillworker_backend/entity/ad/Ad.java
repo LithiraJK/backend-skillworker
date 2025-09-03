@@ -28,7 +28,7 @@ public class Ad {
 
     private BigDecimal startingPrice;
 
-    private LocalDate createdAt;
+    private LocalDate createdDate ;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)

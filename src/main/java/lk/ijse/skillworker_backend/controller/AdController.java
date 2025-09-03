@@ -33,6 +33,30 @@ public class AdController {
         return ResponseEntity.ok(new APIResponse<>(200, "Ads retrieved successfully", ads));
     }
 
+    @GetMapping("/getbyworker/{workerId}")
+    public ResponseEntity<APIResponse<List<AdResponseDTO>>> getAdByWorkerId(@PathVariable Long workerId) {
+        List<AdResponseDTO> ads = adService.getAdsByWorkerId(workerId);
+        return ResponseEntity.ok(new APIResponse<>(200, "Ads retrieved successfully", ads));
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<APIResponse<String>> updateAd(@PathVariable Long id, @RequestBody AdRequestDTO adRequestDTO) {
+        adService.updateAd(id, adRequestDTO);
+        return ResponseEntity.ok(new APIResponse<>(200, "Ad updated successfully", null));
+    }
+
+    @GetMapping("/get/{id}")
+    public ResponseEntity<APIResponse<AdResponseDTO>> getAdById(@PathVariable Long id) {
+        AdResponseDTO ad = adService.getAdById(id);
+        return ResponseEntity.ok(new APIResponse<>(200, "Ad retrieved successfully", ad));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<APIResponse<String>> deleteAd(@PathVariable Long id) {
+        adService.deleteAd(id);
+        return ResponseEntity.ok(new APIResponse<>(200, "Ad deleted successfully", null));
+    }
+
 //    @GetMapping("/search/{keyword}")
 //    public ResponseEntity<APIResponse<List<AdResponseDTO>>> searchAdsByCategory( @PathVariable String keyword) {
 //        List<AdResponseDTO> ads = adService.searchAdsByCategory(keyword);

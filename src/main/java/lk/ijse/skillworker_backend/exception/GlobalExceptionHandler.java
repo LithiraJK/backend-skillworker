@@ -113,4 +113,14 @@ public class GlobalExceptionHandler {
                         null
                 ), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<APIResponse<String>> handleIllegalStateException(IllegalStateException e) {
+        return new ResponseEntity<>(
+                new APIResponse<>(
+                        400,
+                        e.getMessage(),
+                        null
+                ), HttpStatus.BAD_REQUEST);
+    }
 }

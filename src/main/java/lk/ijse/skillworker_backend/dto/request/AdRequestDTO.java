@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -16,8 +14,8 @@ public class AdRequestDTO {
     private String title;
     private String description;
     private BigDecimal startingPrice;
-    private LocalDate createdAt;
     private AdStatus status;
+
     private Long categoryId;
     private Long workerId;
 }

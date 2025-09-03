@@ -16,7 +16,7 @@ public class AdResponseDTO {
     private String title;
     private String description;
     private BigDecimal startingPrice;
-    private LocalDate createdAt;
+    private LocalDate createdDate;
     private String status;
 
     private String categoryName;
