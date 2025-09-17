@@ -12,5 +12,4 @@ public class ReviewRequestDTO {
     private int rating;
     private Long reviewerId;  // User id
     private Long workerId;    // optional
-    private Long adId;        // optional
 }

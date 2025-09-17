@@ -1,5 +1,6 @@
 package lk.ijse.skillworker_backend.dto.response;
 
+import lk.ijse.skillworker_backend.entity.review.ReviewStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,5 +15,8 @@ public class ReviewResponseDTO {
     private String comment;
     private int rating;
     private String reviewerName;
+    private String workerName; // optional
+    private ReviewStatus status;
     private LocalDateTime createdAt;
+
 }

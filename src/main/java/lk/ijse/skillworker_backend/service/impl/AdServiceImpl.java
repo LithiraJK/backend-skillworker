@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -217,6 +218,19 @@ public class AdServiceImpl implements AdService {
         }
 
         return adDetails;
+    }
+
+    @Override
+    public List<AdResponseDTO> getRecentAds() {
+        Collection<Object> recentAds = adRepository.findTop5ByStatusOrderByCreatedDateDesc(AdStatus.ACTIVE);
+
+        if (recentAds.isEmpty()) {
+            throw new ResourceNotFoundException("No recent ads found");
+        }
+
+        return recentAds.stream()
+                .map(ad -> modelMapper.map(ad, AdResponseDTO.class))
+                .collect(Collectors.toList());
     }
 
 

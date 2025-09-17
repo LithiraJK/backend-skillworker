@@ -10,7 +10,13 @@ import java.util.List;
 public interface ReviewService {
     ReviewResponseDTO createReview(ReviewRequestDTO requestDTO);
     List<ReviewResponseDTO> getWorkerReviews(Long workerId);
-    List<ReviewResponseDTO> getAdReviews(Long adId);
+//    List<ReviewResponseDTO> getAdReviews(Long adId);
     Double getWorkerAverageRating(Long workerId);
-    Double getAdAverageRating(Long adId);
+//    Double getAdAverageRating(Long adId);
+
+    List<ReviewResponseDTO> getAllReviews();
+
+    String approveStatus(Long id);
+
+    String rejectStatus(Long id);
 }

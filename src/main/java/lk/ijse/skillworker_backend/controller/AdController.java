@@ -95,4 +95,10 @@ public class AdController {
         return ResponseEntity.ok(new APIResponse<>(200, "Ads retrieved successfully", ads));
     }
 
+    @GetMapping("/getrecent" )
+    public ResponseEntity<APIResponse<List<AdResponseDTO>>> getRecentAds() {
+        List<AdResponseDTO> ads = adService.getRecentAds();
+        return ResponseEntity.ok(new APIResponse<>(200, "Ads retrieved successfully", ads));
+    }
+
 }

@@ -35,9 +35,9 @@ public class Review {
     @JoinColumn(name = "worker_id", nullable = true)
     private Worker worker;
 
-    @ManyToOne
-    @JoinColumn(name = "ad_id", nullable = true)
-    private Ad ad;
+//    @ManyToOne
+//    @JoinColumn(name = "ad_id", nullable = true)
+//    private Ad ad;
 
 
 

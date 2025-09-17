@@ -33,4 +33,6 @@ public interface AdService {
     List<AdDetailResponseDTO> getAllActiveAds();
 
     List<AdDetailResponseDTO> getAllActiveAdsByDistrict(District district);
+
+    List<AdResponseDTO> getRecentAds();
 }

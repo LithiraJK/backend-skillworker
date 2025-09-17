@@ -15,12 +15,10 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     List<Review> findByWorkerId(Long workerId);
 
-    List<Review> findByAdId(Long adId);
-
     @Query("SELECT AVG(r.rating) FROM Review r WHERE r.worker.id = :workerId")
     Double findWorkerAverageRating(@Param("workerId") Long workerId);
 
-    @Query("SELECT AVG(r.rating) FROM Review r WHERE r.ad.id = :adId")
-    Double findAdAverageRating(@Param("adId") Long adId);
+//    @Query("SELECT AVG(r.rating) FROM Review r WHERE r.ad.id = :adId")
+//    Double findAdAverageRating(@Param("adId") Long adId);
 
 }

@@ -35,11 +35,11 @@ public class Ad {
     @Column(name = "status", nullable = false, length = 20)
     private AdStatus status = AdStatus.PENDING;
 
-    @Column(name = "avg_rating")
-    private Double avgRating = 0.0;
-
-    @Column(name = "reviews_count")
-    private Long reviewsCount = 0L;
+//    @Column(name = "avg_rating")
+//    private Double avgRating = 0.0;
+//
+//    @Column(name = "reviews_count")
+//    private Long reviewsCount = 0L;
 
     //Relationships
 
@@ -51,7 +51,7 @@ public class Ad {
     @JoinColumn(name = "worker_id")
     private Worker worker;
 
-    @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL)
-    private List<Review> reviews;
+//    @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL)
+//    private List<Review> reviews;
 
 }

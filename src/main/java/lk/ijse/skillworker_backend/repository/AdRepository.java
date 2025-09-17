@@ -2,12 +2,14 @@ package lk.ijse.skillworker_backend.repository;
 
 import lk.ijse.skillworker_backend.dto.response.AdDetailResponseDTO;
 import lk.ijse.skillworker_backend.entity.ad.Ad;
+import lk.ijse.skillworker_backend.entity.ad.AdStatus;
 import lk.ijse.skillworker_backend.entity.location.District;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,4 +60,6 @@ public interface AdRepository extends JpaRepository<Ad, Long> {
 
 
     List<Ad> findAllByWorkerId(Long workerId);
+
+    Collection<Object> findTop5ByStatusOrderByCreatedDateDesc(AdStatus status);
 }
