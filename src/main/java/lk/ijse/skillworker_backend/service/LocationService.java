@@ -9,6 +9,7 @@ import java.util.List;
 @Service
 public interface LocationService {
     void createLocation(LocationRequestDTO locationRequestDTO);
+    boolean createDefaultLocation();
 
     List<LocationResponseDTO> getAllLocations();
 

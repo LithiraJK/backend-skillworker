@@ -19,4 +19,8 @@ public interface AuthService {
     UserResponseDTO getUser(Long id);
 
     UserResponseDTO updateUser(Long id, UserRequestDTO userDTO);
+
+    List<UserResponseDTO> getAllUsers();
+
+    void changeUserStatus(Long id);
 }

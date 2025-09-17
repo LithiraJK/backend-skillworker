@@ -3,6 +3,7 @@ package lk.ijse.skillworker_backend.entity.worker;
 import jakarta.persistence.*;
 import lk.ijse.skillworker_backend.entity.ad.Ad;
 import lk.ijse.skillworker_backend.entity.auth.User;
+import lk.ijse.skillworker_backend.entity.review.Review;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -44,6 +45,13 @@ public class Worker {
     @Column(name = "is_active", nullable = false)
     private boolean isActive = true;
 
+
+    @Column(name = "avg_rating")
+    private Double avgRating = 0.0;
+
+    @Column(name = "reviews_count")
+    private Long reviewsCount = 0L;
+
     //Relationships
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -51,7 +59,7 @@ public class Worker {
     private User user;
 
     @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Builder.Default // To initialize the list to avoid NullPointerException
+    @Builder.Default
     private List<WorkerLocation> workerLocations = new ArrayList<>();
 
     @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -61,4 +69,8 @@ public class Worker {
     @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL , fetch = FetchType.LAZY)
     @Builder.Default
     private List<Ad> ads = new ArrayList<>();
+
+    @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL)
+    private List<Review> reviews;
+
 }

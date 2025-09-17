@@ -20,4 +20,8 @@ public interface CategoryService {
     List<CategoryResponseDTO> searchCategory(String keyword);
 
     List<CategoryResponseDTO> getActiveCategories();
+
+    List<CategoryResponseDTO> getAllCategorieswithAdsCount();
+
+    CategoryResponseDTO getCategoryById(Long id);
 }

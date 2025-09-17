@@ -32,4 +32,15 @@ public class UserController {
         return ResponseEntity.ok(new APIResponse<>(200,"User Updated Sucessfully !" ,authService.updateUser(id , userDTO)));
     }
 
+    @GetMapping("/getall")
+    public ResponseEntity<APIResponse<List<UserResponseDTO>>> getAllUsers(){
+        return ResponseEntity.ok(new APIResponse<>(200,"Users fetch Sucessfully !" ,authService.getAllUsers()));
+    }
+
+    @PatchMapping("/status/{id}")
+    public ResponseEntity<APIResponse<String>> changeUserStatus(@PathVariable Long id){
+        authService.changeUserStatus(id);
+        return ResponseEntity.ok(new APIResponse<>(200,"User Status Changed Sucessfully !" ,null));
+    }
+
 }

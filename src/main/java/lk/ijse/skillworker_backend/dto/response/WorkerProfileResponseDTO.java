@@ -7,21 +7,23 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @AllArgsConstructor
-@NoArgsConstructor
 @Data
-public class WorkerResponseDTO {
+@NoArgsConstructor
+public class WorkerProfileResponseDTO {
     private Long workerId;
-    private Integer experienceYears;
-    private List<String> phoneNumbers;
-    private String bio;
-    private List<String> skills;
-    private String profilePictureUrl;
-    private boolean profileComplete;
+    private String firstName;
+    private String lastName;
+    private  String email;
 
+    private Integer experienceYears;
+
+    private String bio;
+    private String profilePictureUrl;
     private Double averageRating;
     private Long totalReviews;
 
+    private List<String> skills;
+    private List<String> phoneNumbers;
     private List<CategoryResponseDTO> categories;
     private List<LocationResponseDTO> locations;
-
 }

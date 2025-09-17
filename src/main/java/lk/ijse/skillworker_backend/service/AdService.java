@@ -1,7 +1,9 @@
 package lk.ijse.skillworker_backend.service;
 
 import lk.ijse.skillworker_backend.dto.request.AdRequestDTO;
+import lk.ijse.skillworker_backend.dto.response.AdDetailResponseDTO;
 import lk.ijse.skillworker_backend.dto.response.AdResponseDTO;
+import lk.ijse.skillworker_backend.entity.location.District;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,4 +25,12 @@ public interface AdService {
     void deleteAd(Long id);
 
     List<AdResponseDTO> getAdsByWorkerId(Long workerId);
+
+    List<AdResponseDTO> getAdsByDistrict(District district);
+
+    List<AdResponseDTO> getAdsByCategory(String category);
+
+    List<AdDetailResponseDTO> getAllActiveAds();
+
+    List<AdDetailResponseDTO> getAllActiveAdsByDistrict(District district);
 }

@@ -31,7 +31,6 @@ public class CategoryController {
     @PreAuthorize("hasAnyRole('ADMIN', 'WORKER', 'CLIENT')")
     @GetMapping("/getall")
     public ResponseEntity<APIResponse<List<CategoryResponseDTO>>> getCategories() {
-
         List<CategoryResponseDTO> categories = categoryService.getAllCategories();
         return ResponseEntity.ok(new APIResponse<>(200, "Category list fetch successfully", categories));
     }
@@ -65,6 +64,23 @@ public class CategoryController {
         List<CategoryResponseDTO> categories = categoryService.searchCategory(keyword);
 
         return ResponseEntity.ok(new APIResponse<>( 200, "Category search results", categories));
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'WORKER', 'CLIENT')")
+    @GetMapping("/getallwithadscount")
+    public ResponseEntity<APIResponse<List<CategoryResponseDTO>>> getAllCategorieswithAdsCount() {
+        List<CategoryResponseDTO> categories = categoryService.getAllCategorieswithAdsCount();
+        return ResponseEntity.ok(new APIResponse<>(200, "Category list fetch successfully", categories));
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'WORKER', 'CLIENT')")
+    @GetMapping("/get/{id}")
+    public ResponseEntity<APIResponse<CategoryResponseDTO>> getCategory(@PathVariable Long id) {
+        return ResponseEntity.ok(new APIResponse<>(
+                200,
+                "Category fetch successfully",
+                categoryService.getCategoryById(id)
+        ));
     }
 
 

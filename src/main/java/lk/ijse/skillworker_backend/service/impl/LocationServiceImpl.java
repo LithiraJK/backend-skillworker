@@ -37,6 +37,22 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
+    public boolean createDefaultLocation() {
+
+        if (locationRepository.count() == 0) {
+            for (District district : District.values()) {
+                Location location = new Location();
+                location.setDistrict(district);
+                location.setActive(true);
+                locationRepository.save(location);
+            }
+            return true;
+        }
+        return false;
+    }
+
+
+    @Override
     public List<LocationResponseDTO> getAllLocations() {
 
         List<Location> locations = locationRepository.findAll();
@@ -88,6 +104,5 @@ public class LocationServiceImpl implements LocationService {
         }
         return modelMapper.map(locations, new TypeToken<List<LocationResponseDTO>>() {}.getType());
     }
-
 
 }

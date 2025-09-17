@@ -5,6 +5,7 @@ import com.cloudinary.Cloudinary;
 import lk.ijse.skillworker_backend.dto.request.WorkerRequestDTO;
 import lk.ijse.skillworker_backend.dto.request.WorkerUpdateDTO;
 import lk.ijse.skillworker_backend.dto.response.APIResponse;
+import lk.ijse.skillworker_backend.dto.response.WorkerProfileResponseDTO;
 import lk.ijse.skillworker_backend.dto.response.WorkerResponseDTO;
 import lk.ijse.skillworker_backend.service.CloudinaryService;
 import lk.ijse.skillworker_backend.service.WorkerService;
@@ -48,6 +49,7 @@ public class WorkerController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasAnyRole('ADMIN','WORKER','CLIENT')")
     @PatchMapping("/status/{id}")
     public ResponseEntity<APIResponse<String>> changeStatus(@PathVariable Long id){
         workerService.changeStatus(id);
@@ -82,6 +84,17 @@ public class WorkerController {
     }
 
 
+
+    @PreAuthorize("hasAnyRole('ADMIN','WORKER','CLIENT')")
+    @GetMapping("/profile/{id}")
+    public ResponseEntity<APIResponse<WorkerProfileResponseDTO>> getWorkerProfileById(@PathVariable Long id){
+        WorkerProfileResponseDTO worker = workerService.getWorkerProfileById(id);
+        return ResponseEntity.ok(new APIResponse<>(
+                200,
+                "Success",
+                worker)
+        );
+    }
 
 
 

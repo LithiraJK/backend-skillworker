@@ -4,7 +4,10 @@ import lk.ijse.skillworker_backend.dto.request.WorkerRequestDTO;
 import lk.ijse.skillworker_backend.dto.request.WorkerUpdateDTO;
 import lk.ijse.skillworker_backend.dto.response.CategoryResponseDTO;
 import lk.ijse.skillworker_backend.dto.response.LocationResponseDTO;
+import lk.ijse.skillworker_backend.dto.response.WorkerProfileResponseDTO;
 import lk.ijse.skillworker_backend.dto.response.WorkerResponseDTO;
+import lk.ijse.skillworker_backend.entity.ad.Ad;
+import lk.ijse.skillworker_backend.entity.ad.AdStatus;
 import lk.ijse.skillworker_backend.entity.auth.User;
 import lk.ijse.skillworker_backend.entity.category.Category;
 import lk.ijse.skillworker_backend.entity.location.Location;
@@ -13,10 +16,7 @@ import lk.ijse.skillworker_backend.entity.worker.WorkerCategory;
 import lk.ijse.skillworker_backend.entity.worker.WorkerLocation;
 import lk.ijse.skillworker_backend.exception.ResourceAlreadyExistsException;
 import lk.ijse.skillworker_backend.exception.ResourceNotFoundException;
-import lk.ijse.skillworker_backend.repository.CategoryRepository;
-import lk.ijse.skillworker_backend.repository.LocationRepository;
-import lk.ijse.skillworker_backend.repository.UserRepository;
-import lk.ijse.skillworker_backend.repository.WorkerRepository;
+import lk.ijse.skillworker_backend.repository.*;
 import lk.ijse.skillworker_backend.service.WorkerService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +36,7 @@ public class WorkerServiceImpl implements WorkerService {
     private final WorkerRepository workerRepository;
     private final LocationRepository locationRepository;
     private final ModelMapper modelMapper;
+    private final AdRepository adRepository;
 
     @Override
     @Transactional
@@ -114,15 +116,46 @@ public class WorkerServiceImpl implements WorkerService {
         }).toList();
     }
 
-
     @Override
+    @Transactional
     public void changeStatus(Long id) {
         Worker worker = workerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Worker not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Worker not found with id: " + id));
 
-        worker.setActive(!worker.isActive());
+        boolean newActive = !worker.isActive();
+        worker.setActive(newActive);
+
         workerRepository.save(worker);
 
+        List<Ad> ads = adRepository.findAllByWorkerId(id);
+
+        if (ads.isEmpty()) {
+            return;
+        }
+
+        if (!newActive) {
+            boolean anyChanged = false;
+            for (Ad ad : ads) {
+                if (ad.getStatus() != AdStatus.PAUSED) {
+                    ad.setStatus(AdStatus.PAUSED);
+                    anyChanged = true;
+                }
+            }
+            if (anyChanged) {
+                adRepository.saveAll(ads);
+            }
+        } else {
+            boolean anyChanged = false;
+            for (Ad ad : ads) {
+                if (ad.getStatus() == AdStatus.PAUSED) {
+                    ad.setStatus(AdStatus.ACTIVE);
+                    anyChanged = true;
+                }
+            }
+            if (anyChanged) {
+                adRepository.saveAll(ads);
+            }
+        }
     }
 
     @Override
@@ -172,7 +205,6 @@ public class WorkerServiceImpl implements WorkerService {
             worker.setProfilePictureUrl(dto.getProfilePictureUrl());
         }
 
-        // Update categories if provided
         if (dto.getCategoryIds() != null) {
             worker.getWorkerCategories().clear();
             dto.getCategoryIds().forEach(catId -> {
@@ -215,6 +247,38 @@ public class WorkerServiceImpl implements WorkerService {
                 .toList());
 
         return response;
+    }
+
+    @Override
+    public WorkerProfileResponseDTO getWorkerProfileById(Long id) {
+        Worker worker = workerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Worker not found with id: " + id));
+
+        WorkerProfileResponseDTO response = modelMapper.map(worker, WorkerProfileResponseDTO.class);
+
+        // map categories
+        response.setCategories(worker.getWorkerCategories().stream()
+                .map(wc -> modelMapper.map(wc.getCategory(), CategoryResponseDTO.class))
+                .toList());
+
+        // map locations
+        response.setLocations(worker.getWorkerLocations().stream()
+                .map(wl -> modelMapper.map(wl.getLocation(), LocationResponseDTO.class))
+                .toList());
+
+        response.setTotalReviews(worker.getReviewsCount());
+        response.setAverageRating(worker.getAvgRating());
+
+        User user = worker.getUser();
+
+        response.setFirstName(user.getFirstName());
+        response.setLastName(user.getLastName());
+        response.setEmail(user.getEmail());
+
+
+
+        return response;
+
     }
 
 

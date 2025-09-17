@@ -2,8 +2,10 @@ package lk.ijse.skillworker_backend.controller;
 
 import lk.ijse.skillworker_backend.dto.request.AdRequestDTO;
 import lk.ijse.skillworker_backend.dto.response.APIResponse;
+import lk.ijse.skillworker_backend.dto.response.AdDetailResponseDTO;
 import lk.ijse.skillworker_backend.dto.response.AdResponseDTO;
 import lk.ijse.skillworker_backend.dto.response.AdStatusUpdateDTO;
+import lk.ijse.skillworker_backend.entity.location.District;
 import lk.ijse.skillworker_backend.service.AdService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -68,4 +70,29 @@ public class AdController {
         adService.changeAdStatus(id , requestDTO.getStatus());
         return ResponseEntity.ok(new APIResponse<>(200, "Ad status updated successfully", null));
     }
+
+    @GetMapping("/district/{district}")
+    public ResponseEntity<APIResponse<List<AdResponseDTO>>> getAdsByDistrict(@PathVariable District district) {
+        List<AdResponseDTO> ads = adService.getAdsByDistrict(district);
+        return ResponseEntity.ok(new APIResponse<>(200, "Ads retrieved successfully", ads));
+    }
+
+    @GetMapping("/category/{category}")
+    public ResponseEntity<APIResponse<List<AdResponseDTO>>> getAdsByDistrict(@PathVariable String category) {
+        List<AdResponseDTO> ads = adService.getAdsByCategory(category);
+        return ResponseEntity.ok(new APIResponse<>(200, "Ads retrieved successfully", ads));
+    }
+
+    @GetMapping("/getall/active" )
+    public ResponseEntity<APIResponse<List<AdDetailResponseDTO>>> getAllActiveAds() {
+        List<AdDetailResponseDTO> ads = adService.getAllActiveAds();
+        return ResponseEntity.ok(new APIResponse<>(200, "Ads retrieved successfully", ads));
+    }
+
+    @GetMapping("/getall/active/{district}" )
+    public ResponseEntity<APIResponse<List<AdDetailResponseDTO>>> getAllActiveAdsByDistrict(@PathVariable District district  ) {
+        List<AdDetailResponseDTO> ads = adService.getAllActiveAdsByDistrict(district);
+        return ResponseEntity.ok(new APIResponse<>(200, "Ads retrieved successfully", ads));
+    }
+
 }

@@ -4,15 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-public class CategoryResponseDTO {
+public class ReviewResponseDTO {
     private Long id;
-    private String name;
-    private String description;
-    private boolean isActive ;
-    private Long adCount;
+    private String comment;
+    private int rating;
+    private String reviewerName;
+    private LocalDateTime createdAt;
 }

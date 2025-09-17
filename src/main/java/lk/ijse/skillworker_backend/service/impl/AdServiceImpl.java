@@ -1,10 +1,12 @@
 package lk.ijse.skillworker_backend.service.impl;
 
 import lk.ijse.skillworker_backend.dto.request.AdRequestDTO;
+import lk.ijse.skillworker_backend.dto.response.AdDetailResponseDTO;
 import lk.ijse.skillworker_backend.dto.response.AdResponseDTO;
 import lk.ijse.skillworker_backend.entity.ad.Ad;
 import lk.ijse.skillworker_backend.entity.ad.AdStatus;
 import lk.ijse.skillworker_backend.entity.category.Category;
+import lk.ijse.skillworker_backend.entity.location.District;
 import lk.ijse.skillworker_backend.entity.worker.Worker;
 import lk.ijse.skillworker_backend.exception.ResourceNotFoundException;
 import lk.ijse.skillworker_backend.repository.AdRepository;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -154,5 +157,67 @@ public class AdServiceImpl implements AdService {
         return modelMapper.map(ads, new TypeToken<List<AdResponseDTO>>() {}.getType());
 
     }
+
+    @Override
+    public List<AdResponseDTO> getAdsByDistrict(District district) {
+        List<Ad> ads = adRepository.findAdsByDistrict(district);
+        if (ads.isEmpty()){
+            throw  new ResourceNotFoundException("No ads found");
+        }
+
+        return  modelMapper.map(ads, new TypeToken<List<AdResponseDTO>>() {}.getType());
+    }
+
+    @Override
+    public List<AdResponseDTO> getAdsByCategory(String category) {
+        List<Ad> ads = adRepository.findAdsByCategory(category);
+        if (ads.isEmpty()){
+            throw  new ResourceNotFoundException("No ads found");
+        }
+        return  modelMapper.map(ads, new TypeToken<List<AdResponseDTO>>() {}.getType());
+    }
+
+    @Override
+    public List<AdDetailResponseDTO> getAllActiveAds() {
+        List<AdDetailResponseDTO> adDetails = adRepository.findAllAdDetails();
+
+        if (adDetails.isEmpty()) {
+            throw new ResourceNotFoundException("No ads found");
+        }
+
+        // Enrich each DTO with phoneNumbers and skills
+        for (AdDetailResponseDTO dto : adDetails) {
+            Ad ad = adRepository.findById(dto.getAdId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Ad not found"));
+
+            Worker worker = ad.getWorker();
+            dto.setPhoneNumbers(worker.getPhoneNumbers());
+            dto.setSkills(worker.getSkills());
+        }
+
+        return adDetails;
+    }
+
+    @Override
+    public List<AdDetailResponseDTO> getAllActiveAdsByDistrict(District district) {
+        List<AdDetailResponseDTO> adDetails = adRepository.findAllActiveAdDetailsByDistrict(district);
+
+        if (adDetails.isEmpty()) {
+            throw new ResourceNotFoundException("No Services found in district : " + district);
+        }
+
+        // Enrich each DTO with phoneNumbers and skills
+        for (AdDetailResponseDTO dto : adDetails) {
+            Ad ad = adRepository.findById(dto.getAdId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Ad not found"));
+
+            Worker worker = ad.getWorker();
+            dto.setPhoneNumbers(worker.getPhoneNumbers());
+            dto.setSkills(worker.getSkills());
+        }
+
+        return adDetails;
+    }
+
 
 }

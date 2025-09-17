@@ -52,8 +52,13 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException("Category not found with id " + id));
 
-        category.setName(categoryDTO.getName());
-        category.setDescription(categoryDTO.getDescription());
+        if (categoryDTO.getName() != null) {
+            category.setName(categoryDTO.getName());
+        }
+
+        if (categoryDTO.getDescription() != null) {
+            category.setDescription(categoryDTO.getDescription());
+        }
 
         return modelMapper.map(categoryRepository.save(category), CategoryResponseDTO.class);
 
@@ -84,8 +89,19 @@ public class CategoryServiceImpl implements CategoryService {
         if (categories.isEmpty()) {
             throw new CategoryNotFoundException("No Active categories found");
         }
-
         return modelMapper.map(categories, new TypeToken<List<CategoryResponseDTO>>() {}.getType());
+    }
+
+    @Override
+    public List<CategoryResponseDTO> getAllCategorieswithAdsCount() {
+        return categoryRepository.findAllCategoriesWithAdsCount();
+    }
+
+    @Override
+    public CategoryResponseDTO getCategoryById(Long id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found with id " + id));
+        return modelMapper.map(category, CategoryResponseDTO.class);
     }
 
 }
