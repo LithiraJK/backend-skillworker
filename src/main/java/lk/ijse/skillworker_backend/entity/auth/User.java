@@ -1,7 +1,10 @@
 package lk.ijse.skillworker_backend.entity.auth;
 
 import jakarta.persistence.*;
+import lk.ijse.skillworker_backend.entity.subscription.Subscription;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -31,4 +34,7 @@ public class User {
 
     @Column(nullable = false)
     private boolean isActive = true;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Subscription> subscriptions;
 }

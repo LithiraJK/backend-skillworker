@@ -6,6 +6,7 @@ import lk.ijse.skillworker_backend.entity.category.Category;
 import lk.ijse.skillworker_backend.exception.CategoryNotFoundException;
 import lk.ijse.skillworker_backend.exception.ResourceAlreadyExistsException;
 import lk.ijse.skillworker_backend.repository.CategoryRepository;
+import lk.ijse.skillworker_backend.repository.WorkerRepository;
 import lk.ijse.skillworker_backend.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -19,6 +20,7 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final WorkerRepository workerRepository;
     private final ModelMapper modelMapper;
 
     @Override
@@ -95,6 +97,22 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryResponseDTO> getAllCategorieswithAdsCount() {
         return categoryRepository.findAllCategoriesWithAdsCount();
+    }
+
+    @Override
+    public List<CategoryResponseDTO> getActiveCategoriesByWorkerId(Long workerId) {
+
+        if (!workerRepository.existsById(workerId)) {
+            throw new CategoryNotFoundException("Worker not found with id: " + workerId);
+        }
+
+        List<Category> categories = categoryRepository.findActiveCategoriesByWorkerId(workerId);
+
+        if (categories.isEmpty()) {
+            throw new CategoryNotFoundException("No active categories found for worker with id: " + workerId);
+        }
+
+        return modelMapper.map(categories, new TypeToken<List<CategoryResponseDTO>>() {}.getType());
     }
 
     @Override

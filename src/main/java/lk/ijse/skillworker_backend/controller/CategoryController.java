@@ -74,6 +74,13 @@ public class CategoryController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'WORKER', 'CLIENT')")
+    @GetMapping("worker/{workerId}/active")
+    public ResponseEntity<APIResponse<List<CategoryResponseDTO>>> getActiveCategoriesByWorker(@PathVariable Long workerId) {
+        List<CategoryResponseDTO> categories = categoryService.getActiveCategoriesByWorkerId(workerId);
+        return ResponseEntity.ok(new APIResponse<>(200, "Active categories for worker fetched successfully", categories));
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'WORKER', 'CLIENT')")
     @GetMapping("/get/{id}")
     public ResponseEntity<APIResponse<CategoryResponseDTO>> getCategory(@PathVariable Long id) {
         return ResponseEntity.ok(new APIResponse<>(
@@ -82,14 +89,5 @@ public class CategoryController {
                 categoryService.getCategoryById(id)
         ));
     }
-
-
-
-
-
-
-
-
-
 
 }

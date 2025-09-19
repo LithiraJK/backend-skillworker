@@ -28,9 +28,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception { //http request eke dewal check kranw
         http.csrf(AbstractHttpConfigurer::disable) // Cross-Site Request Forgery (CSRF) protection is disabled
                 .cors(Customizer.withDefaults()) // CORS (Cross-Origin Resource Sharing) is enabled with default settings
+
                 .authorizeHttpRequests(
                         auth->
-                                auth.requestMatchers("api/v1/auth/**").permitAll() // Allow unauthenticated access to /auth/** endpoints
+                                auth.requestMatchers(
+                                                "api/v1/auth/**",                   // auth endpoints
+                                                "api/v1/subscription/payhere/**"        // PayHere notification
+                                        ).permitAll() // Allow unauthenticated access to /auth/** endpoints
                                         .anyRequest().authenticated()) // All other requests require authentication
                 .sessionManagement(
                         session->

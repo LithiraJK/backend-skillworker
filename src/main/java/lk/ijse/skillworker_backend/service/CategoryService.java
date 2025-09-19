@@ -21,6 +21,8 @@ public interface CategoryService {
 
     List<CategoryResponseDTO> getActiveCategories();
 
+    List<CategoryResponseDTO> getActiveCategoriesByWorkerId(Long workerId);
+
     List<CategoryResponseDTO> getAllCategorieswithAdsCount();
 
     CategoryResponseDTO getCategoryById(Long id);
