@@ -40,7 +40,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private String currency;
 
     @Override
-    public SubscriptionResponseDTO createSubscription(SubscriptionRequestDTO requestDTO) {
+    public SubscriptionResponseDTO createSubscription(SubscriptionRequestDTO requestDTO)  {
         User user = userRepository.findById(requestDTO.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
@@ -65,10 +65,16 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 .createdAt(LocalDateTime.now())
                 .build();
 
-//        System.out.println("Sub :"+subscription);
         subscriptionRepository.save(subscription);
 
-        String hash = generateHash(merchantId, orderId, amount, currency, merchantSecret);
+        String hashMerchantSecret = null;
+        try {
+            hashMerchantSecret = md5(merchantSecret).toUpperCase();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        String hash = generateHash(merchantId, orderId, amount, currency, hashMerchantSecret);
 
         System.out.println("Hash: " + hash);
         return SubscriptionResponseDTO.builder()
@@ -79,7 +85,46 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 .currency(currency)
                 .planType(requestDTO.getPlanType().name())
                 .build();
+    }
 
+    private String generateHash(String merchantId, String orderId, BigDecimal amount, String currency, String merchantSecret) {
+        try {
+            String amountStr = String.format("%.2f", amount);
+            String hashedMerchantSecret= md5(merchantSecret).toUpperCase();
+
+            System.out.println("Hash MerchantId: " + hashedMerchantSecret + ", OrderId: " + orderId + ", Currency: " + currency + ", MerchantSecret: " + merchantSecret + ", AmountStr: " + amountStr);
+
+            String hashString = merchantId + orderId + amountStr + currency + hashedMerchantSecret;
+            System.out.println("Hash String: " + hashString);
+            return md5(hashString).toUpperCase();
+        } catch (Exception e) {
+            throw new RuntimeException("Error generating PayHere hash", e);
+        }
+    }
+
+    private String generateNotificationHash(String merchantId, String orderId, BigDecimal amount, String currency, String statusCode, String merchantSecret) {
+        try {
+            String amountStr = String.format("%.2f", amount);
+            String hashedMerchantSecret = md5(merchantSecret).toUpperCase();
+
+            String hashString = merchantId + orderId + amountStr + currency + statusCode + hashedMerchantSecret;
+            return md5(hashString).toUpperCase();
+        } catch (Exception e) {
+            throw new RuntimeException("Error generating PayHere notification hash", e);
+        }
+    }
+
+
+    private String md5(String input) throws Exception {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+
+        byte[] messageDigest = md.digest(input.getBytes(StandardCharsets.UTF_8));
+        StringBuilder sb = new StringBuilder();
+        for (byte b : messageDigest) {
+            sb.append(String.format("%02x", b));
+        }
+
+        return sb.toString();
     }
 
     @Override
@@ -127,46 +172,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 })
                 .orElse(SubscriptionStatusResponseDTO.builder()
                         .active(false)
-                        .plan("NONE")
+                        .plan("FREE")
                         .expiresAt(null)
                         .build());
     }
 
 
-    private String generateHash(String merchantId, String orderId, BigDecimal amount, String currency, String merchantSecret) {
-        try {
-            String amountStr = String.format("%.2f", amount);
 
-            System.out.println("MerchantId: " + merchantId + ", OrderId: " + orderId + ", Currency: " + currency + ", MerchantSecret: " + merchantSecret);
-
-            String hashString = merchantId + orderId + amountStr + currency + merchantSecret;
-            System.out.println("Hash String: " + hashString);
-            return md5(hashString).toUpperCase();
-        } catch (Exception e) {
-            throw new RuntimeException("Error generating PayHere hash", e);
-        }
-    }
-
-    private String generateNotificationHash(String merchantId, String orderId, BigDecimal amount, String currency, String statusCode, String merchantSecret) {
-        try {
-            String amountStr = String.format("%.2f", amount);
-            System.out.println("Amount Str: " + amountStr);
-            String hashString = merchantId + orderId + amountStr + currency + statusCode + merchantSecret;
-            return md5(hashString).toUpperCase();
-        } catch (Exception e) {
-            throw new RuntimeException("Error generating PayHere notification hash", e);
-        }
-    }
-
-    private String md5(String input) throws Exception {
-        MessageDigest md = MessageDigest.getInstance("MD5");
-
-        byte[] messageDigest = md.digest(input.getBytes(StandardCharsets.UTF_8));
-        StringBuilder sb = new StringBuilder();
-        for (byte b : messageDigest) {
-            sb.append(String.format("%02x", b));
-        }
-
-        return sb.toString();
-    }
 }

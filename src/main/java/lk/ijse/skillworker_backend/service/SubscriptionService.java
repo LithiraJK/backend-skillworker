@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface SubscriptionService {
 
-    SubscriptionResponseDTO createSubscription(SubscriptionRequestDTO requestDTO);
+    SubscriptionResponseDTO createSubscription(SubscriptionRequestDTO requestDTO) ;
 
     void handlePayHereNotification(String orderId, String statusCode, String md5sig);
 

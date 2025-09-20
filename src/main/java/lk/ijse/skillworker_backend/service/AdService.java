@@ -7,6 +7,7 @@ import lk.ijse.skillworker_backend.entity.location.District;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface AdService {
@@ -14,7 +15,7 @@ public interface AdService {
 
     List<AdResponseDTO> getAllAds();
 
-    List<AdResponseDTO> searchAdsByCategory(String keyword);
+//    List<AdResponseDTO> searchAdsByCategory(String keyword);
 
     void changeAdStatus(Long id, String adStatus);
 
@@ -30,9 +31,11 @@ public interface AdService {
 
     List<AdResponseDTO> getAdsByCategory(String category);
 
-    List<AdDetailResponseDTO> getAllActiveAds();
+    Map<String, Object> getAllActiveAds(int page, int size);
 
-    List<AdDetailResponseDTO> getAllActiveAdsByDistrict(District district);
+    Map<String, Object> getAllActiveAdsByDistrict(District district, int page, int size);
 
     List<AdResponseDTO> getRecentAds();
+
+    Map<String, Object> getAllActiveAdsByCategory(String category, int page, int size);
 }

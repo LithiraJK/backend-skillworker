@@ -16,13 +16,18 @@ import lk.ijse.skillworker_backend.service.AdService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -68,15 +73,15 @@ public class AdServiceImpl implements AdService {
         return modelMapper.map(ads, new TypeToken<List<AdResponseDTO>>() {}.getType());
     }
 
-    @Override
-    public List<AdResponseDTO> searchAdsByCategory(String keyword) {
-        List<Ad> ads = adRepository.findAll();
-
-        if ((ads.isEmpty())){
-            throw  new ResourceNotFoundException("No ads found");
-        }
-        return modelMapper.map(ads, new TypeToken<List<AdResponseDTO>>() {}.getType());
-    }
+//    @Override
+//    public List<AdResponseDTO> searchAdsByCategory(String keyword) {
+//        List<Ad> ads = adRepository.findAll();
+//
+//        if ((ads.isEmpty())){
+//            throw  new ResourceNotFoundException("No ads found");
+//        }
+//        return modelMapper.map(ads, new TypeToken<List<AdResponseDTO>>() {}.getType());
+//    }
 
     @Override
     @Transactional
@@ -179,14 +184,18 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
-    public List<AdDetailResponseDTO> getAllActiveAds() {
-        List<AdDetailResponseDTO> adDetails = adRepository.findAllAdDetails();
+    public Map<String, Object> getAllActiveAds(int page, int size) {
 
-        if (adDetails.isEmpty()) {
+        Pageable paging = PageRequest.of(page, size);
+
+        Page<AdDetailResponseDTO> pageAdDetails = adRepository.findAllAdDetails(paging);
+
+        if (pageAdDetails.isEmpty()) {
             throw new ResourceNotFoundException("No ads found");
         }
 
-        // Enrich each DTO with phoneNumbers and skills
+        List<AdDetailResponseDTO> adDetails = pageAdDetails.getContent();
+
         for (AdDetailResponseDTO dto : adDetails) {
             Ad ad = adRepository.findById(dto.getAdId())
                     .orElseThrow(() -> new ResourceNotFoundException("Ad not found"));
@@ -194,18 +203,30 @@ public class AdServiceImpl implements AdService {
             Worker worker = ad.getWorker();
             dto.setPhoneNumbers(worker.getPhoneNumbers());
             dto.setSkills(worker.getSkills());
+
         }
 
-        return adDetails;
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("content", adDetails);
+        response.put("totalPages", pageAdDetails.getTotalPages());
+        response.put("totalElements", pageAdDetails.getTotalElements());
+        response.put("currentPage", pageAdDetails.getNumber());
+
+        return response;
     }
 
     @Override
-    public List<AdDetailResponseDTO> getAllActiveAdsByDistrict(District district) {
-        List<AdDetailResponseDTO> adDetails = adRepository.findAllActiveAdDetailsByDistrict(district);
+    public Map<String, Object> getAllActiveAdsByDistrict(District district, int page, int size) {
+        Pageable paging = PageRequest.of(page, size);
 
-        if (adDetails.isEmpty()) {
+        Page<AdDetailResponseDTO> pageAdDetails = adRepository.findAllActiveAdDetailsByDistrict(district, paging);
+
+        if (pageAdDetails.isEmpty()) {
             throw new ResourceNotFoundException("No Services found in district : " + district);
         }
+
+        List<AdDetailResponseDTO> adDetails = pageAdDetails.getContent();
 
         // Enrich each DTO with phoneNumbers and skills
         for (AdDetailResponseDTO dto : adDetails) {
@@ -217,7 +238,46 @@ public class AdServiceImpl implements AdService {
             dto.setSkills(worker.getSkills());
         }
 
-        return adDetails;
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("content", adDetails);
+        response.put("totalPages", pageAdDetails.getTotalPages());
+        response.put("totalElements", pageAdDetails.getTotalElements());
+        response.put("currentPage", pageAdDetails.getNumber());
+
+        return response;
+    }
+
+    @Override
+    public Map<String, Object> getAllActiveAdsByCategory(String category, int page, int size) {
+        Pageable paging = PageRequest.of(page, size);
+
+        Page<AdDetailResponseDTO> pageAdDetails = adRepository.findAllActiveAdDetailsByCategory(category, paging);
+
+        if (pageAdDetails.isEmpty()) {
+            throw new ResourceNotFoundException("No Services found in category : " + category);
+        }
+
+        List<AdDetailResponseDTO> adDetails = pageAdDetails.getContent();
+
+        // Enrich each DTO with phoneNumbers and skills
+        for (AdDetailResponseDTO dto : adDetails) {
+            Ad ad = adRepository.findById(dto.getAdId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Ad not found"));
+
+            Worker worker = ad.getWorker();
+            dto.setPhoneNumbers(worker.getPhoneNumbers());
+            dto.setSkills(worker.getSkills());
+        }
+
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("content", adDetails);
+        response.put("totalPages", pageAdDetails.getTotalPages());
+        response.put("totalElements", pageAdDetails.getTotalElements());
+        response.put("currentPage", pageAdDetails.getNumber());
+
+        return response;
     }
 
     @Override
@@ -227,11 +287,12 @@ public class AdServiceImpl implements AdService {
         if (recentAds.isEmpty()) {
             throw new ResourceNotFoundException("No recent ads found");
         }
-
         return recentAds.stream()
                 .map(ad -> modelMapper.map(ad, AdResponseDTO.class))
                 .collect(Collectors.toList());
     }
+
+
 
 
 }

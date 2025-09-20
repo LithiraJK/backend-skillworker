@@ -4,6 +4,8 @@ import lk.ijse.skillworker_backend.dto.response.AdDetailResponseDTO;
 import lk.ijse.skillworker_backend.entity.ad.Ad;
 import lk.ijse.skillworker_backend.entity.ad.AdStatus;
 import lk.ijse.skillworker_backend.entity.location.District;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -42,7 +44,7 @@ public interface AdRepository extends JpaRepository<Ad, Long> {
             "JOIN w.workerLocations wl " +
             "JOIN wl.location l" +
             " WHERE a.status = 'ACTIVE' ")
-    List<AdDetailResponseDTO> findAllAdDetails();
+    Page<AdDetailResponseDTO> findAllAdDetails(Pageable pageable);
 
 
     @Query("SELECT new lk.ijse.skillworker_backend.dto.response.AdDetailResponseDTO( " +
@@ -56,8 +58,20 @@ public interface AdRepository extends JpaRepository<Ad, Long> {
             "JOIN wl.location l " +
             "WHERE a.status = 'ACTIVE' " +
             "AND (:district IS NULL OR l.district = :district)")
-    List<AdDetailResponseDTO> findAllActiveAdDetailsByDistrict(@Param("district") District district);
+    Page<AdDetailResponseDTO> findAllActiveAdDetailsByDistrict(@Param("district") District district , Pageable pageable);
 
+    @Query("SELECT new lk.ijse.skillworker_backend.dto.response.AdDetailResponseDTO( " +
+            "a.id, a.title, a.description, a.startingPrice, a.createdDate, a.status, " +
+            "c.name, l.district, w.profilePictureUrl) " +
+            "FROM Ad a " +
+            "JOIN a.worker w " +
+            "JOIN w.workerCategories wc " +
+            "JOIN wc.category c " +
+            "JOIN w.workerLocations wl " +
+            "JOIN wl.location l " +
+            "WHERE a.status = 'ACTIVE' " +
+            "AND c.name = :categoryName")
+    Page<AdDetailResponseDTO> findAllActiveAdDetailsByCategory(@Param("categoryName") String categoryName, Pageable pageable);
 
     List<Ad> findAllByWorkerId(Long workerId);
 
