@@ -5,10 +5,19 @@ import lk.ijse.skillworker_backend.dto.request.AuthDTO;
 import lk.ijse.skillworker_backend.dto.request.RegisterDTO;
 import lk.ijse.skillworker_backend.dto.response.APIResponse;
 import lk.ijse.skillworker_backend.dto.response.AuthResponseDTO;
+import lk.ijse.skillworker_backend.entity.auth.Role;
+import lk.ijse.skillworker_backend.entity.auth.User;
+import lk.ijse.skillworker_backend.repository.UserRepository;
 import lk.ijse.skillworker_backend.service.AuthService;
+import lk.ijse.skillworker_backend.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/auth")
@@ -16,6 +25,9 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 public class AuthController {
     private final AuthService authService;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     @PostMapping("/register")
     public ResponseEntity<APIResponse<String>> registerUser (@RequestBody RegisterDTO registerDTO) {
@@ -53,5 +65,60 @@ public class AuthController {
                 authService.refreshToken(refreshToken))
         );
     }
-}
 
+    @PostMapping("/oauth-register")
+    public ResponseEntity<APIResponse<AuthResponseDTO>> oauthRegister(@RequestBody Map<String, String> oauthData) {
+        String email = oauthData.get("email");
+        String firstName = oauthData.get("firstName");
+        String lastName = oauthData.get("lastName");
+        String roleStr = oauthData.get("role");
+
+        if (email == null || firstName == null || roleStr == null) {
+            return ResponseEntity.badRequest()
+                    .body(new APIResponse<>(400, "Missing required fields", null));
+        }
+
+        try {
+            Role role = Role.valueOf(roleStr.toUpperCase());
+
+            // Check if user already exists
+            Optional<User> existingUser = userRepository.findByEmail(email);
+            if (existingUser.isPresent()) {
+                return ResponseEntity.badRequest()
+                        .body(new APIResponse<>(400, "User already exists", null));
+            }
+
+            // Create new OAuth user
+            User newUser = User.builder()
+                    .firstName(firstName)
+                    .lastName(lastName != null ? lastName : "")
+                    .email(email)
+                    .password(passwordEncoder.encode(UUID.randomUUID().toString()))
+                    .role(role)
+                    .isActive(true)
+                    .build();
+
+            User savedUser = userRepository.save(newUser);
+
+            // Generate JWT tokens
+            String accessToken = jwtUtil.generateToken(savedUser.getEmail());
+            String refreshToken = jwtUtil.generateRefreshToken(savedUser.getEmail());
+
+            AuthResponseDTO authResponse = new AuthResponseDTO();
+            authResponse.setUserId(savedUser.getId());
+            authResponse.setToken(accessToken);
+            authResponse.setRefreshToken(refreshToken);
+            authResponse.setRole(savedUser.getRole().toString());
+
+            return ResponseEntity.ok(new APIResponse<>(
+                    200,
+                    "OAuth user registration successful",
+                    authResponse
+            ));
+
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(new APIResponse<>(500, "Registration failed: " + e.getMessage(), null));
+        }
+    }
+}
