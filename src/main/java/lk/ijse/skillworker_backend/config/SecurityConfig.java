@@ -33,16 +33,24 @@ public class SecurityConfig {
                         auth->
                                 auth.requestMatchers(
                                                 "api/v1/auth/**",                   // auth endpoints
-                                                "api/v1/subscription/payhere/**"        // PayHere notification
+                                                "api/v1/subscription/payhere/**" ,// PayHere notification
+                                                "/oauth2/**",                // allow oauth2 endpoints
+                                                "/login/**"                 // allow login endpoints including oauth2 callbacks
                                         ).permitAll() // Allow unauthenticated access to /auth/** endpoints
                                         .anyRequest().authenticated()) // All other requests require authentication
                 .sessionManagement(
                         session->
-                                session.sessionCreationPolicy
-                                        (SessionCreationPolicy.STATELESS))
+                                session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(JWTAuthConfigFilter,
-                        UsernamePasswordAuthenticationFilter.class);
+                        UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/oauth2/success", true)
+                        .failureUrl("/oauth2/failure")
+                        .permitAll()
+                );
+
         return http.build();
     }
 
@@ -57,6 +65,7 @@ public class SecurityConfig {
         return daoAuthenticationProvider;
 
     }
+
 
 
 }

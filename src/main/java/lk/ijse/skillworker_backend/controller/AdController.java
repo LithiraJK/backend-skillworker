@@ -61,8 +61,8 @@ public class AdController {
     }
 
 //    @GetMapping("/search/{keyword}")
-//    public ResponseEntity<APIResponse<List<AdResponseDTO>>> searchAdsByCategory( @PathVariable String keyword) {
-//        List<AdResponseDTO> ads = adService.searchAdsByCategory(keyword);
+//    public ResponseEntity<APIResponse<List<AdResponseDTO>>> searchAdsByKeyword( @PathVariable String keyword) {
+//        List<AdResponseDTO> ads = adService.searchAdsByKeyword(keyword);
 //        return  ResponseEntity.ok(new APIResponse<>(200, "Ads retrieved successfully", ads));
 //    }
 

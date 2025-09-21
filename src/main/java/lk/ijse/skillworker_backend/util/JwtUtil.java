@@ -58,6 +58,20 @@ public class JwtUtil {
                 .compact();
     }
 
+    public boolean validateRefreshToken(String token) {
+        return validateToken(token);
+    }
+
+    public Date extractExpiration(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getExpiration();
+    }
+
+
 
 
 }
