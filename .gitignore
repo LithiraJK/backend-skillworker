@@ -32,5 +32,9 @@ build/
 ### VS Code ###
 .vscode/
 
-### Resource files ###
-src/main/resources/application.properties
+
+# Application properties (contains sensitive data)
+**/application.properties
+**/application-*.properties
+**/application.yml
+**/application-*.yml
