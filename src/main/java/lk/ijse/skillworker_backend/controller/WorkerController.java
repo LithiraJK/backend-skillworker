@@ -96,41 +96,14 @@ public class WorkerController {
         );
     }
 
-
-
-
-//    @GetMapping("/search/{keyword}")
-//    public ResponseEntity<APIResponse<String>> searchWorker(@PathVariable String keyword){
-//        return ResponseEntity.ok(new APIResponse<>(
-//                200,
-//                "Success",
-//                null
-//        ));
-//    }
-
-
-//    @PutMapping("update/{id}/profile")
-//    public ResponseEntity<WorkerResponseDTO> updateProfile(
-//            @PathVariable Long id,
-//            @RequestBody WorkerProfileDTO profileDTO) {
-//        return ResponseEntity.ok(workerService.updateProfile(id, profileDTO));
-//    }
-//
-//    @PutMapping("update/{id}/categories")
-//    public ResponseEntity<WorkerResponseDTO> updateCategories(
-//            @PathVariable Long id,
-//            @RequestBody WorkerCategoryUpdateDTO dto) {
-//        return ResponseEntity.ok(workerService.updateCategories(id, dto.getCategoryIds()));
-//    }
-//
-//    @PutMapping("update/{id}/locations")
-//    public ResponseEntity<WorkerResponseDTO> updateLocations(
-//            @PathVariable Long id,
-//            @RequestBody WorkerLocationUpdateDTO dto) {
-//        return ResponseEntity.ok(workerService.updateLocations(id, dto.getLocationIds()));
-//    }
-
-
-
+    @GetMapping("/top-rated")
+    public ResponseEntity<APIResponse<List<WorkerResponseDTO>>> getTop3WorkersByRating(){
+        List<WorkerResponseDTO> topWorkers = workerService.getTop3WorkersByRating();
+        return ResponseEntity.ok(new APIResponse<>(
+                200,
+                "Top 3 workers retrieved successfully",
+                topWorkers)
+        );
+    }
 
 }

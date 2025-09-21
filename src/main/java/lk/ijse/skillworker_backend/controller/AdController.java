@@ -72,11 +72,6 @@ public class AdController {
         return ResponseEntity.ok(new APIResponse<>(200, "Ad status updated successfully", null));
     }
 
-//    @GetMapping("/district/{district}")
-//    public ResponseEntity<APIResponse<List<AdResponseDTO>>> getAdsByDistrict(@PathVariable District district) {
-//        List<AdResponseDTO> ads = adService.getAdsByDistrict(district);
-//        return ResponseEntity.ok(new APIResponse<>(200, "Ads retrieved successfully", ads));
-//    }
 
     @GetMapping("/category/{category}")
     public ResponseEntity<APIResponse<List<AdResponseDTO>>> getAdsByDistrict(@PathVariable String category) {
@@ -108,5 +103,12 @@ public class AdController {
         List<AdResponseDTO> ads = adService.getRecentAds();
         return ResponseEntity.ok(new APIResponse<>(200, "Ads retrieved successfully", ads));
     }
+
+//    @GetMapping("/search/{keyword}")
+//    public ResponseEntity<APIResponse<List<AdDetailResponseDTO>>> searchAdsByCategory(@PathVariable String keyword) {
+//        List<AdDetailResponseDTO> ads = adService.searchAllAdsByKeyword(keyword);
+//        return  ResponseEntity.ok(new APIResponse<>(200, "Ads retrieved successfully", ads));
+//    }
+
 
 }

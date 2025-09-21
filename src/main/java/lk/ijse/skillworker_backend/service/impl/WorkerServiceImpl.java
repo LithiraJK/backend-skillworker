@@ -275,11 +275,34 @@ public class WorkerServiceImpl implements WorkerService {
         response.setLastName(user.getLastName());
         response.setEmail(user.getEmail());
 
-
-
         return response;
-
     }
 
+    @Override
+    public List<WorkerResponseDTO> getTop3WorkersByRating() {
+        List<Worker> topWorkers = workerRepository.findTop3ByAvgRatingDesc();
+
+        return topWorkers.stream().map(worker -> {
+            WorkerResponseDTO response = modelMapper.map(worker, WorkerResponseDTO.class);
+
+            // Map categories
+            response.setCategories(worker.getWorkerCategories().stream()
+                    .map(wc -> modelMapper.map(wc.getCategory(), CategoryResponseDTO.class))
+                    .toList());
+
+            // Map locations
+            response.setLocations(worker.getWorkerLocations().stream()
+                    .map(wl -> modelMapper.map(wl.getLocation(), LocationResponseDTO.class))
+                    .toList());
+
+
+
+            // Set rating information
+            response.setAverageRating(worker.getAvgRating());
+            response.setTotalReviews(worker.getReviewsCount());
+
+            return response;
+        }).toList();
+    }
 
 }

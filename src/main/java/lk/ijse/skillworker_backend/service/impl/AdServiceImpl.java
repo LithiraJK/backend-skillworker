@@ -280,6 +280,11 @@ public class AdServiceImpl implements AdService {
         return response;
     }
 
+//    @Override
+//    public List<AdDetailResponseDTO> searchAllAdsByKeyword(String keyword) {
+//        return List.of();
+//    }
+
     @Override
     public List<AdResponseDTO> getRecentAds() {
         Collection<Object> recentAds = adRepository.findTop5ByStatusOrderByCreatedDateDesc(AdStatus.ACTIVE);

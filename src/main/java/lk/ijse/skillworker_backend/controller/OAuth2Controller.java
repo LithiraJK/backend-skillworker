@@ -52,11 +52,9 @@ public class OAuth2Controller {
             String firstName = nameParts[0];
             String lastName = (nameParts.length > 1) ? nameParts[1] : "";
 
-            // Check if user already exists
             Optional<User> optionalUser = userRepository.findByEmail(email);
 
             if (optionalUser.isPresent()) {
-                // User exists - complete login directly
                 User user = optionalUser.get();
                 if (!user.isActive()) {
                     user.setActive(true);
@@ -74,13 +72,10 @@ public class OAuth2Controller {
                 );
                 return new RedirectView(redirectUrl);
             } else {
-                // New user - check if role is provided via various methods
                 String roleParam = null;
 
-                // Try to get role from request parameter first
                 roleParam = request.getParameter("role");
 
-                // If not found, try to get from cookies
                 if (roleParam == null || roleParam.isEmpty()) {
                     jakarta.servlet.http.Cookie[] cookies = request.getCookies();
                     if (cookies != null) {
@@ -93,7 +88,6 @@ public class OAuth2Controller {
                     }
                 }
 
-                // If still not found, try to get from session (fallback)
                 if (roleParam == null || roleParam.isEmpty()) {
                     HttpSession session = request.getSession(false);
                     if (session != null) {
@@ -102,15 +96,13 @@ public class OAuth2Controller {
                 }
 
                 if (roleParam != null && !roleParam.isEmpty()) {
-                    // Role provided - create user directly
                     Role role;
                     try {
                         role = Role.valueOf(roleParam.toUpperCase());
                     } catch (IllegalArgumentException e) {
-                        role = Role.CLIENT; // Default fallback
+                        role = Role.CLIENT;
                     }
 
-                    // Create new user with specified role
                     User newUser = User.builder()
                             .firstName(firstName)
                             .lastName(lastName)
@@ -122,18 +114,15 @@ public class OAuth2Controller {
 
                     User savedUser = userRepository.save(newUser);
 
-                    // Generate JWT tokens
                     String accessToken = jwtUtil.generateToken(savedUser.getEmail());
                     String refreshToken = jwtUtil.generateRefreshToken(savedUser.getEmail());
 
-                    // Clear the pendingOAuthRole cookie by setting it to expire
                     String redirectUrl = String.format(
                             "http://localhost:5500/pages/login-page.html?token=%s&refreshToken=%s&userId=%d&role=%s&clearOAuthRole=true",
                             accessToken, refreshToken, savedUser.getId(), savedUser.getRole().toString()
                     );
                     return new RedirectView(redirectUrl);
                 } else {
-                    // No role specified - redirect to role selection page
                     String redirectUrl = String.format(
                             "http://localhost:5500/SkillWorker_FrontEnd/pages/signup-role-selection.html?oauth=true&email=%s&firstName=%s&lastName=%s",
                             email, firstName, lastName
@@ -152,7 +141,6 @@ public class OAuth2Controller {
         return new RedirectView("http://localhost:5500/SkillWorker_FrontEnd/pages/login-page.html?error=oauth_failure");
     }
 
-    // Add endpoint to store role in session before OAuth
     @PostMapping("/prepare")
     public ResponseEntity<String> prepareOAuth(@RequestBody Map<String, String> request, HttpServletRequest httpRequest) {
         String role = request.get("role");

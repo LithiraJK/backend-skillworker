@@ -21,4 +21,6 @@ public interface WorkerService {
     WorkerResponseDTO updateWorker(Long workerId, WorkerUpdateDTO dto);
 
     WorkerProfileResponseDTO getWorkerProfileById(Long id);
+
+    List<WorkerResponseDTO> getTop3WorkersByRating();
 }

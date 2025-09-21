@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -23,6 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final JWTAuthConfigFilter JWTAuthConfigFilter;
+    private final PasswordEncoder passwordEncoder;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception { //http request eke dewal check kranw
@@ -34,7 +34,8 @@ public class SecurityConfig {
                                 auth.requestMatchers(
                                                 "api/v1/auth/**",                   // auth endpoints
                                                 "api/v1/subscription/payhere/**" ,// PayHere notification
-                                                "/oauth2/**",                // allow oauth2 endpoints
+                                                "/oauth2/**",
+                                                "api/v1/worker/top-rated",
                                                 "/login/**"                 // allow login endpoints including oauth2 callbacks
                                         ).permitAll() // Allow unauthenticated access to /auth/** endpoints
                                         .anyRequest().authenticated()) // All other requests require authentication
@@ -58,12 +59,10 @@ public class SecurityConfig {
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setPasswordEncoder(passwordEncoder);
         return authProvider;
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+
+
 }

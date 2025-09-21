@@ -38,4 +38,6 @@ public interface AdService {
     List<AdResponseDTO> getRecentAds();
 
     Map<String, Object> getAllActiveAdsByCategory(String category, int page, int size);
+
+//    List<AdDetailResponseDTO> searchAllAdsByKeyword(String keyword);
 }
