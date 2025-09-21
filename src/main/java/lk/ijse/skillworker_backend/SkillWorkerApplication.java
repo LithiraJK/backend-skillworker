@@ -10,5 +10,4 @@ public class SkillWorkerApplication {
         SpringApplication.run(SkillWorkerApplication.class, args);
     }
 
-
 }

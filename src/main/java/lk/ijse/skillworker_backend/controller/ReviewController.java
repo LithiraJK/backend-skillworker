@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.http.conn.util.PublicSuffixList;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'WORKER', 'CLIENT')")
     @PostMapping("/create")
     public ResponseEntity<APIResponse<ReviewResponseDTO>> createReview(@RequestBody ReviewRequestDTO requestDTO) {
         return new ResponseEntity<>(new APIResponse<>(
@@ -29,6 +31,7 @@ public class ReviewController {
                 HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'WORKER', 'CLIENT')")
     @GetMapping("/worker/{workerId}")
     public ResponseEntity<APIResponse<List<ReviewResponseDTO>>> getWorkerReviews(@PathVariable Long workerId) {
         return ResponseEntity.ok(new APIResponse<>(
@@ -46,6 +49,7 @@ public class ReviewController {
 //        );
 //    }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'WORKER', 'CLIENT')")
     @GetMapping("/worker/{workerId}/rating")
     public ResponseEntity<APIResponse<Double>> getWorkerAverageRating(@PathVariable Long workerId) {
         return ResponseEntity.ok(new APIResponse<>(200 ,
@@ -62,6 +66,7 @@ public class ReviewController {
 //        );
 //    }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'WORKER', 'CLIENT')")
     @GetMapping("/getall")
     public ResponseEntity<APIResponse<List<ReviewResponseDTO>>> getAllReviews() {
         return ResponseEntity.ok(new APIResponse<>(200 ,
@@ -70,6 +75,7 @@ public class ReviewController {
         );
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PatchMapping("/approve/{id}")
     public ResponseEntity<APIResponse<String>> approveReviewStatus(@PathVariable Long id){
         return ResponseEntity.ok(new APIResponse<>(
@@ -78,7 +84,7 @@ public class ReviewController {
                 reviewService.approveStatus(id))
         );
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PatchMapping("/reject/{id}")
     public ResponseEntity<APIResponse<String>> rejectReviewStatus(@PathVariable Long id){
         return ResponseEntity.ok(new APIResponse<>(

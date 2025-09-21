@@ -26,10 +26,21 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<APIResponse<Map<String, String>>> handleValidationExceptions(MethodArgumentNotValidException e) {
+        Map<String, String> errors = new HashMap<>();
+        e.getBindingResult().getFieldErrors().forEach(error -> {
+            errors.put(error.getField(), error.getDefaultMessage());
+        });
+        return new ResponseEntity<>(new APIResponse<>(
+                HttpStatus.BAD_REQUEST.value(),
+                "Validation Failed",
+                errors
+        ), HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<APIResponse<String>> handleGenericException(ResourceNotFoundException e) {    //handle all exception here
-
+    public ResponseEntity<APIResponse<String>> handleGenericException(ResourceNotFoundException e) {
         System.err.println("Resource not found: " + e.getMessage());
         return new ResponseEntity<>(new APIResponse<>(
                 404,
@@ -38,6 +49,7 @@ public class GlobalExceptionHandler {
                 HttpStatus.NOT_FOUND
         );
     }
+
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     public ResponseEntity<APIResponse<String>> handleResourceAlreadyExistsException(ResourceAlreadyExistsException e) {
         System.err.println("Resource already exists: " + e.getMessage());
@@ -49,39 +61,25 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<APIResponse<Object>>  handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        Map<String, String> errors = new HashMap<>();
-        e.getBindingResult().getFieldErrors().forEach(error -> { // Loop through each field error and add it to the errors map
-            errors.put(error.getField(), error.getDefaultMessage());
-        });
-
-        return new ResponseEntity<>(new APIResponse<>( // Create a new APIResponse object with the validation errors
-                HttpStatus.BAD_REQUEST.value(),
-                "Validation Failed",
-                errors
-        ),HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(EmailNotFoundException .class)
+    @ExceptionHandler(EmailNotFoundException.class)
     public ResponseEntity<APIResponse<String>> handleEmailNotFoundException(EmailNotFoundException e) {
         return new ResponseEntity<>(
                 new APIResponse<>(
                         404,
                         e.getMessage(),
                         null
-                ),HttpStatus.NOT_FOUND
+                ), HttpStatus.NOT_FOUND
         );
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<APIResponse<String>>  handleBadCredentialsException(BadCredentialsException e) {
+    public ResponseEntity<APIResponse<String>> handleBadCredentialsException(BadCredentialsException e) {
         return new ResponseEntity<>(
                 new APIResponse<>(
                         401,
                         e.getMessage(),
                         null
-                ),HttpStatus.UNAUTHORIZED) ;
+                ), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(ExpiredJwtException.class)
@@ -89,7 +87,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 new APIResponse<>(
                         401,
-                        e.getMessage(),
+                        "JWT token has expired: " + e.getMessage(),
                         null
                 ), HttpStatus.UNAUTHORIZED);
     }

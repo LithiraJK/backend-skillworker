@@ -1,6 +1,7 @@
 package lk.ijse.skillworker_backend.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lk.ijse.skillworker_backend.dto.request.AuthDTO;
 import lk.ijse.skillworker_backend.dto.request.RegisterDTO;
 import lk.ijse.skillworker_backend.dto.response.APIResponse;
@@ -30,7 +31,7 @@ public class AuthController {
     private final JwtUtil jwtUtil;
 
     @PostMapping("/register")
-    public ResponseEntity<APIResponse<String>> registerUser (@RequestBody RegisterDTO registerDTO) {
+    public ResponseEntity<APIResponse<String>> registerUser (@Valid @RequestBody RegisterDTO registerDTO) {
         return ResponseEntity.ok(new APIResponse<>(
                 200,
                 "User Registration Success !!",
@@ -38,7 +39,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<APIResponse<AuthResponseDTO>> login (@RequestBody AuthDTO authDTO) {
+    public ResponseEntity<APIResponse<AuthResponseDTO>> login (@Valid @RequestBody AuthDTO authDTO) {
         return ResponseEntity.ok(new APIResponse<>(
                 200,
                 "User Login Success !!",

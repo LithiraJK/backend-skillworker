@@ -27,16 +27,19 @@ public class UserController {
         return ResponseEntity.ok(new APIResponse<>(200,"User fetch Sucessfully !" ,authService.getUser(id)));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'WORKER', 'CLIENT')")
     @PutMapping("/update/{id}")
     public  ResponseEntity<APIResponse<UserResponseDTO>> updateUser(@PathVariable Long id , @RequestBody UserRequestDTO userDTO){
         return ResponseEntity.ok(new APIResponse<>(200,"User Updated Sucessfully !" ,authService.updateUser(id , userDTO)));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'WORKER', 'CLIENT')")
     @GetMapping("/getall")
     public ResponseEntity<APIResponse<List<UserResponseDTO>>> getAllUsers(){
         return ResponseEntity.ok(new APIResponse<>(200,"Users fetch Sucessfully !" ,authService.getAllUsers()));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'WORKER', 'CLIENT')")
     @PatchMapping("/status/{id}")
     public ResponseEntity<APIResponse<String>> changeUserStatus(@PathVariable Long id){
         authService.changeUserStatus(id);
