@@ -124,7 +124,7 @@ public class OAuth2Controller {
                     return new RedirectView(redirectUrl);
                 } else {
                     String redirectUrl = String.format(
-                            "http://localhost:5500/SkillWorker_FrontEnd/pages/signup-role-selection.html?oauth=true&email=%s&firstName=%s&lastName=%s",
+                            "http://localhost:5500/pages/signup-role-selection.html?oauth=true&email=%s&firstName=%s&lastName=%s",
                             email, firstName, lastName
                     );
                     return new RedirectView(redirectUrl);
@@ -132,13 +132,13 @@ public class OAuth2Controller {
             }
 
         } catch (Exception e) {
-            return new RedirectView("http://localhost:5500/SkillWorker_FrontEnd/pages/login-page.html?error=authentication_error");
+            return new RedirectView("http://localhost:5500/pages/login-page.html?error=authentication_error");
         }
     }
 
     @GetMapping("/failure")
     public RedirectView oauth2Failure() {
-        return new RedirectView("http://localhost:5500/SkillWorker_FrontEnd/pages/login-page.html?error=oauth_failure");
+        return new RedirectView("http://localhost:5500/pages/login-page.html?error=oauth_failure");
     }
 
     @PostMapping("/prepare")

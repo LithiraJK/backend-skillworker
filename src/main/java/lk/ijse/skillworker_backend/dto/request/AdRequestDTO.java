@@ -18,15 +18,11 @@ public class AdRequestDTO {
     @NotBlank(message = "Description is required")
     private String description;
 
-    @NotBlank(message = "Starting price is required")
     private BigDecimal startingPrice;
 
-    @NotBlank(message = "Status is required")
     private AdStatus status;
 
-    @NotBlank(message = "Category ID is required")
     private Long categoryId;
 
-    @NotBlank(message = "Worker ID is required")
     private Long workerId;
 }
