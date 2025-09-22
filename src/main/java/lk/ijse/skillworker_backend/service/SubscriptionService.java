@@ -13,4 +13,6 @@ public interface SubscriptionService {
     void handlePayHereNotification(String orderId, String statusCode, String md5sig);
 
     SubscriptionStatusResponseDTO getSubscriptionStatus(Long userId);
+
+    String generateNotificationHashForOrder(String orderId, String statusCode);
 }

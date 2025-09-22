@@ -2,6 +2,7 @@ package lk.ijse.skillworker_backend.controller;
 
 import lk.ijse.skillworker_backend.dto.request.SubscriptionRequestDTO;
 import lk.ijse.skillworker_backend.dto.response.APIResponse;
+import lk.ijse.skillworker_backend.dto.response.PayhereResponseDTO;
 import lk.ijse.skillworker_backend.dto.response.SubscriptionResponseDTO;
 import lk.ijse.skillworker_backend.dto.response.SubscriptionStatusResponseDTO;
 import lk.ijse.skillworker_backend.service.SubscriptionService;
@@ -36,6 +37,8 @@ public class SubscriptionController {
             @RequestParam String status_code,
             @RequestParam String md5sig) {
 
+        System.out.println("Received PayHere notification: order_id=" + order_id + ", status_code=" + status_code + ", md5sig=" + md5sig);
+
         try {
             subscriptionService.handlePayHereNotification(order_id, status_code, md5sig);
             return ResponseEntity.ok(new APIResponse<>(200, "Notification processed successfully", null));
@@ -45,29 +48,34 @@ public class SubscriptionController {
         }
     }
 
-    @PostMapping("/payhere/notify")
-    public ResponseEntity<APIResponse<String>> handlePayHereNotificationLegacy(
-            @RequestParam String order_id,
-            @RequestParam String status_code,
-            @RequestParam String md5sig) {
 
-        return handlePayHereNotification(order_id, status_code, md5sig);
-    }
-
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'WORKER')")
     @PostMapping("/payhere/success")
-    public ResponseEntity<APIResponse<String>> handlePayHereSuccess(){
-        return ResponseEntity.ok(new APIResponse<>(200, "Payment Successful", null));
+    public ResponseEntity<APIResponse<String>> handlePayHereSuccess(@RequestBody PayhereResponseDTO payhereResponse) {
+        try {
+            subscriptionService.handlePayHereNotification(payhereResponse.getOrderId(), payhereResponse.getStatusCode(), payhereResponse.getMd5sig());
+            return ResponseEntity.ok(new APIResponse<>(200, "Subscription processed successfully", null));
+        } catch (Exception e) {
+            System.err.println("PayHere notification error: " + e.getMessage());
+            return ResponseEntity.status(500).body(new APIResponse<>(500, "Error processing Subscription process: " + e.getMessage(), null));
+        }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'WORKER')")
     @GetMapping("/status/{userId}")
     public ResponseEntity<SubscriptionStatusResponseDTO> getSubscriptionStatus(@PathVariable Long userId) {
         SubscriptionStatusResponseDTO status = subscriptionService.getSubscriptionStatus(userId);
         return ResponseEntity.ok(status);
     }
 
-
-
-
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'WORKER')")
+    @GetMapping("/notification-hash/{orderId}/{statusCode}")
+    public ResponseEntity<APIResponse<String>> getNotificationHash(@PathVariable String orderId, @PathVariable String statusCode) {
+        try {
+            String hash = subscriptionService.generateNotificationHashForOrder(orderId, statusCode);
+            return ResponseEntity.ok(new APIResponse<>(200, "Hash generated successfully", hash));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new APIResponse<>(500, "Error generating hash: " + e.getMessage(), null));
+        }
+    }
 }

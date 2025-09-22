@@ -21,9 +21,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/v1/auth")
-@RequiredArgsConstructor
+@RequestMapping("/api/v1/auth")
 @CrossOrigin
+@RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
     private final UserRepository userRepository;

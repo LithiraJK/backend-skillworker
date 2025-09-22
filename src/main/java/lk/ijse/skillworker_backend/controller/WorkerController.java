@@ -19,9 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/worker")
-@RequiredArgsConstructor
+@RequestMapping("/api/v1/worker")
 @CrossOrigin
+@RequiredArgsConstructor
 public class WorkerController {
 
     private final WorkerService workerService;

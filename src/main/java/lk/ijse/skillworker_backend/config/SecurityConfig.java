@@ -36,7 +36,7 @@ public class SecurityConfig {
                                                 "api/v1/subscription/payhere/**" ,// PayHere notification
                                                 "/oauth2/**",
                                                 "api/v1/worker/top-rated",
-                                                "/login/**"                 // allow login endpoints including oauth2 callbacks
+                                                "/login/**"               // allow login endpoints including oauth2 callbacks
                                         ).permitAll() // Allow unauthenticated access to /auth/** endpoints
                                         .anyRequest().authenticated()) // All other requests require authentication
                 .sessionManagement(
