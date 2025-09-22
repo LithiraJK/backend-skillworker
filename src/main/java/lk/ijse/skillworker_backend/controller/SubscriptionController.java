@@ -30,14 +30,28 @@ public class SubscriptionController {
     }
 
 
-    @PostMapping("/payhere/notify")
+    @PostMapping("/notify")
     public ResponseEntity<APIResponse<String>> handlePayHereNotification(
             @RequestParam String order_id,
             @RequestParam String status_code,
             @RequestParam String md5sig) {
 
-        subscriptionService.handlePayHereNotification(order_id, status_code, md5sig);
-        return ResponseEntity.ok(new APIResponse<>(200, "Notification processed successfully", null));
+        try {
+            subscriptionService.handlePayHereNotification(order_id, status_code, md5sig);
+            return ResponseEntity.ok(new APIResponse<>(200, "Notification processed successfully", null));
+        } catch (Exception e) {
+            System.err.println("PayHere notification error: " + e.getMessage());
+            return ResponseEntity.status(500).body(new APIResponse<>(500, "Error processing notification: " + e.getMessage(), null));
+        }
+    }
+
+    @PostMapping("/payhere/notify")
+    public ResponseEntity<APIResponse<String>> handlePayHereNotificationLegacy(
+            @RequestParam String order_id,
+            @RequestParam String status_code,
+            @RequestParam String md5sig) {
+
+        return handlePayHereNotification(order_id, status_code, md5sig);
     }
 
 
