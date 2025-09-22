@@ -35,37 +35,37 @@ SkillWorker addresses the challenge of finding reliable skilled workers in Sri L
 
 ### 🏠 Login Page
 <div align="center">
-  <img src="SkillWorker_BackEnd/src/main/resources/static/login.png" alt="SkillWorker Homepage" width="800">
+  <img src="src/main/resources/static/login.png" alt="SkillWorker Homepage" width="800">
   <p><em>Modern landing page with service discovery and top-rated professionals</em></p>
 </div>
 
 ### 👷‍♂️ Worker Dashboard
 <div align="center">
-  <img src="SkillWorker_BackEnd/src/main/resources/static/worker-dash.png" alt="Worker Dashboard" width="800">
+  <img src="src/main/resources/static/worker-dash.png" alt="Worker Dashboard" width="800">
   <p><em>Comprehensive dashboard for workers to manage profiles, services, and analytics</em></p>
 </div>
 
 ### 👨‍💼 Home Page
 <div align="center">
-  <img src="SkillWorker_BackEnd/src/main/resources/static/client-dash.png" alt="Client Dashboard" width="800">
+  <img src="src/main/resources/static/client-dash.png" alt="Client Dashboard" width="800">
   <p><em>Interactive client interface with service search and location-based filtering</em></p>
 </div>
 
 ### 🛡️ Admin Panel
 <div align="center">
-  <img src="SkillWorker_BackEnd/src/main/resources/static/admin-dash.png" alt="Admin Dashboard" width="800">
+  <img src="src/main/resources/static/admin-dash.png" alt="Admin Dashboard" width="800">
   <p><em>Advanced administrative controls for platform management</em></p>
 </div>
 
 ### 📱 Profile Management
 <div align="center">
-  <img src="SkillWorker_BackEnd/src/main/resources/static/profile-manage.png" alt="Worker Profile" width="800">
+  <img src="src/main/resources/static/profile-manage.png" alt="Worker Profile" width="800">
   <p><em>Rich profile creation and management interface</em></p>
 </div>
 
 ### 💳 Subscription Plans
 <div align="center">
-  <img src="SkillWorker_BackEnd/src/main/resources/static/subscription.png" alt="Subscription Plans" width="800">
+  <img src="src/main/resources/static/subscription.png" alt="Subscription Plans" width="800">
   <p><em>Flexible subscription tiers with PayHere payment integration</em></p>
 </div>
 
@@ -354,7 +354,7 @@ curl http://localhost:8080/api/v1/auth/test
 
 Watch our comprehensive demo showcasing all features of the SkillWorker platform:
 
-**🔗 [SkillWorker - Professional Service Platform Demo](https://youtu.be/your-demo-video-id)**
+**🔗 [Spring Boot Project - IJSE - GDSE72 - Galle - Lithira Jayanaka - 2nd Semester Final Project](https://youtu.be/yqRcDHTZrvU)**
 
 ### Demo Highlights:
 - 👤 User registration and authentication
